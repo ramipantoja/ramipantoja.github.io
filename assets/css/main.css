@@ -1987,7 +1987,7 @@ input, select, textarea {
 				position: relative;
 				width: 35%;
 				margin: 0;
-				opacity: 0.0;
+				opacity: 0.1;
   				filter: alpha(opacity=0); /* For IE8 and earlier */
 			}
 
