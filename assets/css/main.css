@@ -509,7 +509,7 @@ input, select, textarea {
 		font-size: 18pt;
 		line-height: 1.75em;
 		color: #39454b;
-		letter-spacing: normal;
+		letter-spacing: 2px;
 	}
 
 		@media screen and (max-width: 1920px) {
@@ -542,7 +542,7 @@ input, select, textarea {
 				font-size: 13pt;
 			}
 
-		}
+		}@import url('https://fonts.googleapis.com/css?family=Julius+Sans+One&display=swap');
 
 		@media screen and (max-width: 736px) {
 
@@ -556,7 +556,7 @@ input, select, textarea {
 	h1, h2, h3, h4, h5, h6 {
 		font-weight: 900;
 		color: inherit;
-		letter-spacing: normal;
+		letter-spacing: 2px;
 	}
 
 		h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
@@ -567,7 +567,7 @@ input, select, textarea {
 	h2 {
 		font-size: 2.25em;
 		line-height: 1.25em;
-		letter-spacing: normal;
+		letter-spacing: 2px;
 	}
 
 	@media screen and (max-width: 736px) {
