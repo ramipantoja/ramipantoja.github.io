@@ -2346,13 +2346,13 @@ input, select, textarea {
 
 #span {
 }
-a {
+{
     color:white;
 }
-a:hover span {
+hover span {
     display:none;
 }
-a:hover:before {
+hover:before {
     color:white;
     content:"WATCH TRAILER";
 }
