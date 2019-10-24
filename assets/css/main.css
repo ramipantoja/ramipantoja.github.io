@@ -2342,20 +2342,18 @@ input, select, textarea {
 		}
 
 
-/* Span */
+/* Button */
 
-#span {
+  #button {
+    background-color: Transparent;
+    background-repeat:no-repeat;
+    border: none;
+    cursor:pointer;
+    overflow: hidden;
+    outline:none;
 }
-{
-    color:white;
-}
-hover span {
-    display:none;
-}
-hover:before {
-    color:white;
-    content:"WATCH TRAILER";
-}
+button:hover span {display:none}
+button:hover:before {content:"Watch Trailer"}
 
 /* Video Player */
 
