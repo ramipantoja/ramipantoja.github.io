@@ -5,6 +5,7 @@
 @import url('https://fonts.googleapis.com/css?family=Cormorant+Garamond:600&display=swap');
 @import url('https://fonts.googleapis.com/css?family=Julius+Sans+One&display=swap');
 @import url('https://fonts.googleapis.com/css?family=Palanquin:500&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Syncopate&display=swap');
 @import url("font-awesome.min.css");
 
 /*
@@ -505,8 +506,8 @@ input, select, textarea {
 /* Type */
 
 	body, input, textarea, select {
-		font-family: 'Palanquin', sans-serif;
-		font-weight: 500;
+		font-family: 'Syncopate', sans-serif;
+		font-weight: 400;
 		font-size: 18pt;
 		line-height: 1.75em;
 		color: #39454b;
