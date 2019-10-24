@@ -2341,6 +2341,24 @@ input, select, textarea {
 
 		}
 
+
+/* Span */
+
+span {
+    font-size:12px;
+}
+a {
+    color:white;
+}
+a:hover span {
+    display:none;
+}
+a:hover:before {
+    color:white;
+    font-size:24px;
+    content:"WATCH TRAILER";
+}
+
 /* Video Player */
 
 #fade {
