@@ -4,6 +4,7 @@
 @import url('https://fonts.googleapis.com/css?family=Permanent+Marker&display=swap');
 @import url('https://fonts.googleapis.com/css?family=Cormorant+Garamond:600&display=swap');
 @import url('https://fonts.googleapis.com/css?family=Julius+Sans+One&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Palanquin:500&display=swap');
 @import url("font-awesome.min.css");
 
 /*
@@ -504,12 +505,12 @@ input, select, textarea {
 /* Type */
 
 	body, input, textarea, select {
-		font-family: 'Julius Sans One', sans-serif;
-		font-weight: 400;
+		font-family: 'Palanquin', sans-serif;
+		font-weight: 500;
 		font-size: 18pt;
 		line-height: 1.75em;
 		color: #39454b;
-		letter-spacing: 2px;
+		letter-spacing: normal;
 	}
 
 		@media screen and (max-width: 1920px) {
@@ -556,7 +557,7 @@ input, select, textarea {
 	h1, h2, h3, h4, h5, h6 {
 		font-weight: 900;
 		color: inherit;
-		letter-spacing: 2px;
+		letter-spacing: normal;
 	}
 
 		h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
@@ -567,7 +568,7 @@ input, select, textarea {
 	h2 {
 		font-size: 2.25em;
 		line-height: 1.25em;
-		letter-spacing: 2px;
+		letter-spacing: normal;
 	}
 
 	@media screen and (max-width: 736px) {
