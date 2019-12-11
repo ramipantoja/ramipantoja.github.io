@@ -507,13 +507,15 @@ input, select, textarea {
 /* Type */
 
 	body, input, textarea, select {
-		font-family: 'Lacquer', sans-serif;
-		font-weight: 400;
+		font-family: p22-underground-pc, sans-serif;
+		font-style: normal;
+		font-weight: 500;
 		font-size: 18pt;
 		line-height: 1.75em;
 		color: #39454b;
 		letter-spacing: normal;
 	}
+
 
 		@media screen and (max-width: 1920px) {
 
