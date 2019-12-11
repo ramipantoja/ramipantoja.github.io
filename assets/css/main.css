@@ -508,6 +508,7 @@ input, select, textarea {
 
 	body, input, textarea, select {
 		font-family: p22-underground-pc, sans-serif;
+		text-transform: lowercase
 		font-style: normal;
 		font-weight: 500;
 		font-size: 18pt;
