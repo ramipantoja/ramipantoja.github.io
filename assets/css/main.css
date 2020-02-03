@@ -1238,7 +1238,7 @@ body.viewport-lg {
 				background: #e5e6e7;
 			}
 
-/* Poptrox */
+/* Poptrox 
 
 	.poptrox-popup {
 		-moz-box-sizing: content-box;
@@ -1427,7 +1427,9 @@ body.viewport-lg {
 
 		}
 
-/* Gallery */
+*/
+
+/* Gallery 
 
 	.gallery {
 		display: -moz-flex;
@@ -1834,6 +1836,8 @@ body.viewport-lg {
 				}
 
 		}
+
+*/
 
 /* Header */
 
@@ -2361,7 +2365,7 @@ body.viewport-lg {
 		}
 
 
-/* Button */
+/* Button 
 
   #button {
     background-color: Transparent;
@@ -2374,7 +2378,9 @@ body.viewport-lg {
 button:hover span {display:none}
 button:hover:before {content:"Watch Trailer"}
 
-/* Video Player */
+*/
+
+/* Video Player 
 
 #fade {
   display: none;
@@ -2435,3 +2441,5 @@ button:hover:before {content:"Watch Trailer"}
 .test:hover ~ .test2 {
   display: none;
 }
+
+*/
