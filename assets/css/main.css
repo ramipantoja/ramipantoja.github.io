@@ -671,7 +671,7 @@ body.viewport-lg {
 
 		}
 
-/* Button */
+/* Button 
 
 	input[type="button"],
 	input[type="submit"],
@@ -787,6 +787,8 @@ body.viewport-lg {
 			button.style2.down {
 				background-image: url("images/arrow.svg");
 			}
+
+*/
 
 /* Form */
 
