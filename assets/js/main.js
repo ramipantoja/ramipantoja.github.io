@@ -202,10 +202,10 @@
 				resizeTimeout = setTimeout(function() {
 
 					// Update scrolly links.
-						$('a[href^="#"]').scrolly({
-							speed: 1500,
-							offset: $header.outerHeight() - 1
-						});
+					//	$('a[href^="#"]').scrolly({
+					//		speed: 1500,
+					//		offset: $header.outerHeight() - 1
+					//	});
 
 					// Re-enable animations/transitions.
 						setTimeout(function() {
