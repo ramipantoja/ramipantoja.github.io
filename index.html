@@ -23,6 +23,13 @@ a span.sm, a:hover span.lg {display: inline; }
 a:hover span.sm, a span.lg {display: none; }
 a:hover {visibility:visible;color:#000;}
 </style>
+		<script>
+    window.document.onload = () => {
+        [].forEach.call(document.querySelector(".afterglow"), el => {
+            el.addEventListener("click", evt => evt.preventDefault(), false);
+        });
+    }
+</script>
 		
 	</head>
 	<body class="is-preload">
@@ -260,13 +267,7 @@ a:hover {visibility:visible;color:#000;}
 			<script src="assets/js/util.js"></script>
 			<script src="assets/js/main.js"></script>
 			<script type="text/javascript" src="//cdn.jsdelivr.net/npm/afterglowplayer@1.x"></script>
-<script>
-    window.document.onload = () => {
-        [].forEach.call(document.querySelector(".afterglow"), el => {
-            el.addEventListener("click", evt => evt.preventDefault(), false);
-        });
-    }
-</script>
+
 
 	</body>
 </html>
