@@ -2378,7 +2378,42 @@ body.viewport-lg {
 			}
 
 		}
-
+/*mobile smaller image background*/
+@media screen and (max-width: 767px){
+	/* Intro */
+	#intro {
+		background: url("images/overlay.png"), url("../../images/intro-small.jpg");
+	}
+	/* One */
+	#luckyb {
+		background: url("images/overlay.png"), url("../../images/five-small.jpg");
+	}
+	/* Two */
+	#tsm {
+		background: url("images/overlay.png"), url("../../images/four-small.jpg");
+	}
+	/* Three */
+	#gd {
+		background: url("images/overlay.png"), url("../../images/one-small.jpg");
+	}
+	/* Four */
+	#layla {
+		background: url("images/overlay.png"), url("../../images/two-small.jpg");
+	}
+	/* Five */
+	#sits {
+		background: url("images/overlay.png"), url("../../images/sits-small.jpg");
+	}
+	/* Six */
+	#maneater {
+		background: url("images/overlay.png"), url("../../images/three-small.jpg");
+	}
+	#intro, #luckyb, #tsm, #gd, #layla, #sits, #maneater{
+		background-size: 256px 256px, cover;
+		background-attachment: fixed, fixed;
+		background-position: top left, center center;
+	}
+}
 
 /* Button 
 
