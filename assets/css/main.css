@@ -1197,7 +1197,7 @@ body.viewport-lg {
 /* Sections/Article */
 
 	header {
-		margin-bottom: 0.5em;
+		margin-bottom: 1em;
 	}
 
 		header p {
@@ -1207,7 +1207,7 @@ body.viewport-lg {
 		}
 
 	footer {
-		margin-top: 0.5em;
+		margin-top: 2em;
 	}
 
 /* Table */
@@ -2292,6 +2292,17 @@ body.viewport-lg {
 		background-position: top left, bottom center;
 		background-repeat: repeat, no-repeat;
 	}
+
+
+/* Zero */
+
+	#rod {
+		background: url("images/overlay.png"), url("../../images/six.jpg");
+		background-size: 256px 256px, cover;
+		background-attachment: fixed, fixed;
+		background-position: top left, center center;
+	}
+
 
 /* One */
 
