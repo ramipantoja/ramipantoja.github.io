@@ -2294,6 +2294,36 @@ body.viewport-lg {
 	}
 
 
+/* Vibrations */
+
+	#vbes {
+		background: url("images/overlay.png"), url("../../images/ten.jpg");
+		background-size: 256px 256px, cover;
+		background-attachment: fixed, fixed;
+		background-position: top left, center center;
+	}
+
+
+/* Flaws */
+
+	#flws {
+		background: url("images/overlay.png"), url("../../images/nine.jpg");
+		background-size: 256px 256px, cover;
+		background-attachment: fixed, fixed;
+		background-position: top left, center center;
+	}
+
+
+/* Deadcat */
+
+	#dcf {
+		background: url("images/overlay.png"), url("../../images/eight.jpg");
+		background-size: 256px 256px, cover;
+		background-attachment: fixed, fixed;
+		background-position: top left, center center;
+	}
+
+
 /* Mam */
 
 	#mam {
