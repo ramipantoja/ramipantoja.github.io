@@ -1,0 +1,174 @@
+/* V3 homepage — the films and Rasp's original mark provide the character. */
+.home-v3{--display:'Manrope',Arial,sans-serif;font-family:'Manrope',Arial,sans-serif}
+.home-v3 .site-header{background:#fff;border-bottom-color:#fff;backdrop-filter:none}
+.home-v3 .nav-links{border-top-color:#fff}
+
+/* Light, uncomplicated titles. The underline appears without moving the type. */
+.home-v3 .film-card .film-main-link h3,
+.home-v3 .film-card:first-child .film-main-link h3{
+  font-family:'Manrope',Arial,sans-serif;
+  font-size:clamp(2.15rem,3.55vw,3.55rem);
+  font-weight:400;
+  line-height:1.11;
+  letter-spacing:-.055em;
+  text-transform:uppercase;
+  margin:16px 0 7px;
+  text-decoration:underline;
+  text-decoration-thickness:1px;
+  text-underline-offset:5px;
+  text-decoration-color:transparent;
+  transition:text-decoration-color .28s ease;
+}
+.home-v3 .film-main-link:hover h3,
+.home-v3 .film-main-link:focus-visible h3{
+  color:#111;
+  text-decoration-color:currentColor;
+}
+.home-v3 .film-image .film-preview{
+  transition:opacity .36s cubic-bezier(.22,1,.36,1);
+}
+@media(hover:hover) and (pointer:fine){
+  .home-v3 .film-main-link .film-image,
+  .home-v3 .film-main-link .film-image>img{cursor:url('/assets/rasp-arrow-cursor.png') 30 8,pointer}
+}
+
+/* The BAFTA mask is isolated from the supplied composite artwork. */
+.home-v3 .film-award{align-items:center;gap:14px;margin-top:8px;padding-top:5px}
+.home-v3 .bafta-emblem{display:block;flex:0 0 42px;width:42px;height:54px;overflow:hidden}
+.home-v3 .bafta-award .bafta-emblem img{
+  display:block;width:234px;max-width:none;height:auto;
+  filter:grayscale(1) brightness(0);
+}
+.home-v3 .bifa-award img{width:75px;max-height:58px;margin:0;object-fit:contain;flex:none}
+.home-v3 .film-award .award-copy,
+.home-v3 .film-award .award-copy span{
+  display:flex;flex-direction:column;min-width:0;
+  font-family:'Manrope',Arial,sans-serif;
+  font-size:.8125rem;font-weight:400;line-height:1.42;
+  letter-spacing:0;text-transform:none;
+}
+.home-v3 .film-award .award-copy{gap:2px}
+.home-v3 .film-award .award-copy strong{font-size:.875rem;font-weight:600;line-height:1.3;white-space:nowrap}
+
+/* Development and About use one type voice and a quieter rhythm. */
+.home-v3 .development{border-top:1px solid #111}
+.home-v3 #development-heading{display:inline-flex;align-items:center;gap:12px}
+.home-v3 .development-heading-arrow{display:block;width:27px;height:auto;flex:none}
+.home-v3 .development-body,
+.home-v3 .development-body+.development-body{
+  border-top-color:#d0d0d0;
+  padding-top:clamp(24px,3vw,38px);
+  padding-bottom:clamp(36px,4.2vw,57px);
+}
+.home-v3 .development-body h3,
+.home-v3 .development-confessions h3,
+.home-v3 .development-blob h3{
+  font-family:'Manrope',Arial,sans-serif;
+  font-weight:400;
+  font-size:clamp(2.1rem,4.1vw,3.55rem);
+  line-height:1.1;
+  letter-spacing:-.055em;
+  text-transform:uppercase;
+}
+.home-v3 .development-confessions h3{max-width:18ch;text-wrap:balance}
+.home-v3 .development-body>p{font-size:clamp(1.08rem,1.6vw,1.375rem);line-height:1.5}
+.home-v3 .development-foot{font-size:.875rem;line-height:1.55}
+.home-v3 .about .section-heading,
+.home-v3 .post-banner .section-heading,
+.home-v3 .contact-heading{
+  font-family:'Manrope',Arial,sans-serif;
+  font-weight:400;
+  font-size:clamp(3rem,5.2vw,5.3rem);
+  line-height:1.11;
+  letter-spacing:-.055em;
+}
+.home-v3 .about .about-lead{font-size:clamp(1.5rem,2.25vw,2.15rem);line-height:1.38}
+.home-v3 .about .about-copy{font-size:1rem;line-height:1.67;margin-bottom:18px}
+.home-v3 .post-banner{border-top-width:1px}
+.home-v3 .post-banner-inner{grid-template-columns:minmax(0,.88fr) minmax(0,1.12fr);column-gap:clamp(28px,5vw,76px)}
+.home-v3 .about-grid,
+.home-v3 .programmes,
+.home-v3 .contact-grid{
+  grid-template-columns:minmax(0,.88fr) minmax(0,1.12fr);
+  column-gap:clamp(28px,5vw,76px);
+}
+.home-v3 .contact-detail{padding-top:0}
+.home-v3 .post-heading-logo{margin:0}
+.home-v3 .post-wordmark{display:block;width:185px;max-width:100%;height:auto;filter:invert(1)}
+.home-v3 .post-cta{display:inline-flex;align-items:center;gap:13px;padding:7px 0 9px;border-bottom:1px solid currentColor;font:500 1rem/1.3 'Manrope',Arial,sans-serif;letter-spacing:-.015em;transition:gap .25s ease,border-color .25s ease}
+.home-v3 .post-cta img{display:block;width:28px;height:auto;flex:none;transition:transform .25s ease}
+.home-v3 .post-cta:hover{gap:18px;border-color:transparent}
+.home-v3 .post-cta:hover img{transform:translateX(3px)}
+.home-v3 .post-cta:focus-visible{outline:2px solid #111;outline-offset:5px}
+
+/* Dates and small labels remain mono; the prose reads in Manrope. */
+.home-v3 .programme-list .programme-detail,
+.home-v3 .contact-policy{
+  font-family:'Manrope',Arial,sans-serif;
+  font-size:.875rem;
+  line-height:1.5;
+  font-weight:400;
+  letter-spacing:0;
+}
+.home-v3 .programme-list strong{font-family:'Manrope',Arial,sans-serif;font-weight:500}
+.home-v3 .programme-list a{transition:color .2s ease}
+.home-v3 .programme-list a:hover{padding-left:0}
+.home-v3 .programme-list a:hover strong{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}
+
+@media(max-width:900px){
+  .home-v3 .post-banner-inner{grid-template-columns:1fr}
+  .home-v3 .about-grid,
+  .home-v3 .programmes,
+  .home-v3 .contact-grid{grid-template-columns:1fr}
+  .home-v3 .development-body h3,
+  .home-v3 .development-blob h3{font-size:clamp(2.35rem,6vw,3.7rem)}
+  .home-v3 .development-confessions h3{font-size:clamp(2.2rem,5.5vw,3.4rem)}
+}
+@media(max-width:700px){
+  .home-v3 .film-card .film-main-link h3,
+  .home-v3 .film-card:first-child .film-main-link h3{
+    font-size:clamp(2rem,8vw,3.2rem);
+    line-height:1.12;
+  }
+  .home-v3 .bafta-emblem{flex-basis:34px;width:34px;height:44px}
+  .home-v3 .bafta-award .bafta-emblem img{width:193px}
+  .home-v3 .bifa-award img{width:69px;max-height:53px}
+  .home-v3 .film-award .award-copy span{font-size:.75rem}
+  .home-v3 .development-body,
+  .home-v3 .development-body+.development-body{padding:25px 0 36px;gap:15px}
+  .home-v3 .development-body h3,
+  .home-v3 .development-confessions h3,
+  .home-v3 .development-blob h3{font-size:clamp(2rem,7.8vw,3.15rem)}
+  .home-v3 .development-body>p{font-size:1.0625rem;line-height:1.5}
+  .home-v3 .about .section-heading,
+  .home-v3 .post-banner .section-heading,
+  .home-v3 .contact-heading{font-size:clamp(2.7rem,10vw,4.3rem)}
+  .home-v3 .about .about-lead{font-size:1.5rem}
+  .home-v3 .post-wordmark{width:clamp(140px,43vw,170px)}
+}
+
+/* An on-demand viewing surface keeps the film grid as the site's front door. */
+.watch-dialog{width:min(960px,calc(100vw - 36px),calc((100dvh - 160px)*16/9));max-width:none;max-height:calc(100dvh - 28px);padding:16px;background:#fff;color:#111;border:1px solid #111;box-shadow:0 18px 60px #0004;overflow:auto}
+.watch-dialog::backdrop{background:rgba(0,0,0,.78)}
+.watch-top{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:0 0 14px}
+.watch-top h2{margin:0;font:400 clamp(1.4rem,3vw,2rem)/1.1 'Manrope',Arial,sans-serif;letter-spacing:-.04em;text-transform:uppercase}
+.watch-close{flex:none;border:0;background:transparent;color:inherit;font:500 .875rem/1.3 'Manrope',Arial,sans-serif;cursor:pointer;padding:7px 3px}
+.watch-close span{font-size:1.6rem;vertical-align:-.12em;padding-left:6px}
+.watch-close:hover{text-decoration:underline;text-underline-offset:4px}
+.watch-close:focus-visible,.watch-external:focus-visible{outline:2px solid #111;outline-offset:3px}
+.watch-player{width:100%;aspect-ratio:16/9;background:#111}
+.watch-player iframe{display:block;width:100%;height:100%;border:0}
+.watch-external{display:inline-block;margin-top:12px;font:500 .875rem/1.4 'Manrope',Arial,sans-serif;text-decoration:underline;text-underline-offset:4px}
+.watch-external:hover{text-decoration-thickness:2px}
+@media(max-width:700px){
+  .watch-dialog{width:calc(100vw - 20px);padding:10px}
+  .watch-top{padding-bottom:10px}
+  .watch-top h2{font-size:clamp(1.15rem,5.5vw,1.65rem)}
+}
+@media(prefers-reduced-motion:reduce){
+  .home-v3 .film-card .film-main-link h3,
+  .home-v3 .film-image .film-preview,
+  .home-v3 .programme-list a,
+  .home-v3 .post-cta,
+  .home-v3 .post-cta img{transition:none}
+}
