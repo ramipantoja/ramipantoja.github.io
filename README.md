@@ -4,4 +4,4 @@ This branch contains the V3 static site in the repository root for GitHub Pages 
 
 The site uses plain HTML, CSS and JavaScript. Edit `index.html` and `rasp-post/index.html` for copy; `v3.css` and `post-v3.css` for current design. Images, marks and fonts are in `assets/`. Teaser MP4s in `videos/` use the original files already in this repository; the Girlfriend Deluxe cropped hover preview is in `assets/`.
 
-Before moving this branch into the Pages source, confirm public development claims and company logo use, test on devices, remove `noindex,nofollow` from `index.html` and `rasp-post/index.html`, replace the disallow rule in `robots.txt`, and check the canonical domain against the existing `CNAME`. Preserve the old-site archive and test HTTPS, hover videos, film dialogs, email and mobile navigation after deployment.
+The public pages now permit indexing and use the existing apex domain in their canonical, social and sitemap URLs. Legacy detail and producer-note pages remain noindexed. Preserve the old-site archive. After merge, verify HTTPS, film links, hover videos, dialog behaviour, email and mobile navigation on the live domain.
