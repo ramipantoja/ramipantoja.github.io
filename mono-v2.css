@@ -1,0 +1,386 @@
+/* Rasp Films — monochrome V2. The original ink/lavender route is a separate Site. */
+:root[data-theme="mono"]{--ink:#111;--paper:#fff;--acid:#111;--grey:#505050;--line:#d2d2d2;--rule:#bfbfbf;color-scheme:light;background:#fff;color:#111}
+html{scroll-padding-top:84px}
+body{background:#fff;color:#111;font-size:1rem;line-height:1.6}
+::selection{background:#111;color:#fff}
+a:focus-visible,button:focus-visible{outline:2px solid #111;outline-offset:4px}
+.site-header{background:rgba(255,255,255,.97);border-bottom:1px solid #111;backdrop-filter:none}
+.nav-inner{min-height:69px}
+.brand-logo{filter:invert(1);width:185px}
+.nav-links{gap:clamp(16px,2.7vw,34px);font-size:.875rem}
+.nav-links .nav-post{border:0;padding:12px 0}
+.nav-links .nav-post:hover,.nav-links a:hover,.nav-links [aria-current=page]{color:#111;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:5px;background:none}
+.nav-menu{color:#111;border-color:#111}
+.eyebrow{font-size:.75rem;letter-spacing:.1em}
+.action,.text-link{border-color:#111;color:#111}
+.action:hover{background:#111;border-color:#111;color:#fff}
+.action-primary{background:#111;color:#fff}
+.action-primary:hover{background:#fff;color:#111}
+.cover{background:#fff;border-bottom:0}
+.cover-layout{padding-top:clamp(48px,7vw,98px);padding-bottom:clamp(58px,7vw,98px)}
+.title-main{color:#111!important;font-size:clamp(8rem,17.4vw,15.2rem);line-height:.75}
+.title-second{margin-top:clamp(11px,1.8vw,25px);padding-right:0;gap:clamp(14px,2vw,28px)}
+.title-second em{color:#111;font-size:clamp(3rem,5.8vw,6.1rem)}
+.title-second span{color:#111;font-size:clamp(6.5rem,13.5vw,11.9rem)}
+.cover-bottom{margin-top:clamp(48px,7vw,92px);align-items:center;border-top:1px solid #111;padding-top:23px}
+.cover-intro{font-size:1.125rem;line-height:1.6;color:#111;max-width:500px}
+.cover-mark{width:clamp(100px,12vw,180px);opacity:1}
+.section{padding-top:clamp(65px,8vw,115px);padding-bottom:clamp(70px,8vw,120px)}
+.section-head{align-items:start;margin-bottom:clamp(34px,4vw,55px)}
+.section-head h2,.section-heading{font-size:clamp(3.4rem,6vw,6rem);line-height:.98}
+.section-head p{color:#444;line-height:1.65;font-size:1rem;max-width:340px}
+#films{padding-top:clamp(55px,7vw,95px)}
+#films .section-head{border-top:2px solid #111;padding-top:18px}
+.work-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(64px,7vw,105px) clamp(26px,4.2vw,62px)}
+.film-card:nth-child(2),.film-card:nth-child(3),.film-card:nth-child(4),.film-card:nth-child(5){grid-column:auto;width:100%;margin:0;padding-top:0}
+.film-card:nth-child(5){grid-column:1/-1;width:100%}
+.film-image{background:#eee}
+.film-image img,.film-card:nth-child(2) .film-image img,.film-card:nth-child(3) .film-image img,.film-card:nth-child(4) .film-image img{aspect-ratio:1.5;object-fit:cover}
+.film-card:nth-child(3) .film-image img{object-position:50% 50%}
+.film-card:nth-child(4) .film-image img{object-position:50% 47%}
+.film-card:nth-child(5) .film-image img{aspect-ratio:2.28;object-position:50% 50%}
+.film-card:hover .film-image img{transform:none}
+.film-image:after{box-shadow:inset 0 0 0 1px #00000014}
+.film-cta{display:none}
+.film-main-link h3{font-size:clamp(2.6rem,4.2vw,4.2rem);line-height:1;margin:17px 0 10px}
+.film-main-link:hover h3,.film-main-link:focus-visible h3{color:#111;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:5px}
+.film-info{border-top:1px solid #111;padding-top:13px}
+.film-info p{font-size:.875rem;line-height:1.6;color:#393939}
+.creator-link{text-decoration-color:#111}
+.creator-link:hover{color:#111;text-decoration-thickness:2px}
+.film-award{color:#111;border-top:1px solid #bbb;margin-top:17px;padding-top:16px;gap:22px}
+.film-award img{filter:grayscale(1) brightness(0);width:clamp(115px,14vw,170px)}
+.bifa-award img{width:95px;max-height:58px;margin:-8px 0}
+.film-award span{font-size:.75rem;line-height:1.45}
+.development{background:#fff;color:#111;border-top:2px solid #111;border-bottom:1px solid #111}
+.development-inner{padding-top:18px;padding-bottom:clamp(56px,7vw,98px);grid-template-columns:minmax(150px,.34fr) minmax(0,1fr)}
+.development-label,.development-body{border-top:0}
+.development-label{padding-top:9px}
+.development-mark{width:clamp(90px,11vw,140px)}
+.development-body{padding-top:0}
+.development-body+.development-body{border-top:1px solid #111;padding-top:clamp(38px,5vw,66px);margin-top:clamp(48px,6vw,85px)}
+.development h2{font-size:clamp(4rem,8.2vw,8.5rem);line-height:.92;margin-bottom:clamp(25px,3vw,40px)}
+.development-confessions h2{font-size:clamp(3.3rem,6.6vw,6.6rem);line-height:.94}
+.development-blob h2{letter-spacing:-.02em}
+.development-body>p{font-size:clamp(1.25rem,2.15vw,1.8rem);line-height:1.45;max-width:720px;margin-bottom:clamp(32px,4vw,54px)}
+.development-foot{border-color:#aaa;padding-top:16px;font-size:.875rem;line-height:1.6}
+.development-foot a:hover{color:#111;text-decoration-thickness:2px}
+.development-body p a{text-decoration-thickness:1px}
+.about{background:#fff;color:#111}
+.about .section-heading{font-size:clamp(3.4rem,6vw,6rem)}
+.about-copy{color:#333;line-height:1.7}
+.about-lead{line-height:1.34}
+.about-credential{border-color:#111;color:#111}
+.programmes-heading,.programme-list,.programme-list a{border-color:#bbb}
+.programmes-heading p,.programme-detail{color:#444}
+.programme-list a:hover{color:#111}
+.post-banner{background:#fff;color:#111;border-top:2px solid #111;border-bottom:1px solid #111;padding-block:clamp(45px,6vw,80px)}
+.post-banner:after{display:none}
+.post-banner .action{background:#111;color:#fff;border-color:#111}
+.post-banner .action:hover{background:#fff;color:#111}
+.contact-detail p{color:#444}
+.email-link{border-color:#111}
+.email-link:hover{color:#111;text-decoration:underline;text-underline-offset:7px}
+.site-footer{border-color:#bbb;color:#4a4a4a}
+.footer-links a:hover{color:#111;text-decoration:underline;text-underline-offset:4px}
+/* Post page: let the artwork provide the colour. */
+.post-hero{background:#fff;color:#111;padding-top:clamp(45px,6vw,80px);padding-bottom:clamp(55px,7vw,90px)}
+.post-topline{border-top:2px solid #111;padding-top:17px}
+.post-hero h1{font-size:clamp(1rem,1.5vw,1.25rem)}
+.post-display{font-size:clamp(5rem,11vw,10.5rem);line-height:.96;margin-block:clamp(45px,5vw,75px)}
+.post-display .outline{color:#111;-webkit-text-stroke:0}
+.post-hero-bottom p{font-size:1.0625rem;line-height:1.65}
+.post-hero .action{background:#111;border-color:#111;color:#fff}
+.post-hero .action:hover{background:#fff;color:#111}
+.post-localnav{border-color:#bbb}
+.post-localnav a:hover{color:#111;text-decoration:underline;text-underline-offset:4px}
+.post-art-info{border-color:#111}
+.post-art-info p{color:#111}
+.post-art-info span{color:#555}
+.platform-shelf{background:#fff;color:#111;border-top:1px solid #111;border-bottom:1px solid #111}
+.platform-inner p{color:#444}
+.platform-logos img{filter:grayscale(1) brightness(0)}
+.case-study{background:#fff;color:#111;border-bottom:1px solid #111;margin-bottom:clamp(65px,8vw,100px)}
+.case-role,.case-metrics dt{color:#444}
+.case-metrics>div{border-color:#aaa}
+.service{border-color:#bbb}
+.service .number{color:#111}
+.service p,.service ul{color:#444}
+.service .service-outcome{color:#111;border-color:#111}
+.service .service-outcome strong{color:#444}
+.note-card{border-color:#bbb}
+.note-card .eyebrow,.note-card p{color:#444}
+.note-card:hover h3{color:#111;text-decoration:underline;text-underline-offset:4px}
+.contact-detail .contact-prompt{border-color:#bbb}
+/* Film and producer detail pages. */
+.back-link,.detail-tagline,.detail-grid p,.detail-grid dt{color:#444}
+.detail-title{font-size:clamp(4.5rem,10.5vw,10rem);line-height:.97;margin-block:clamp(35px,5vw,65px) 24px}
+.detail-still{aspect-ratio:2/1;object-fit:cover}
+.detail-grid h2{font-size:clamp(3rem,5vw,5rem)}
+.detail-grid dd .creator-link{color:#111}
+.detail-grid dd .creator-link:hover{color:#111}
+.guide-top{background:#fff;color:#111;border-bottom:1px solid #111}
+.breadcrumbs,.guide-meta{color:#555}
+.guide-standfirst{color:#333}
+.guide-nav .eyebrow{color:#555}
+.guide-nav a{border-color:#bbb}
+.guide-nav a:hover{color:#111}
+.guide-copy p,.guide-copy li{color:#333;line-height:1.75}
+.guide-copy strong{color:#111}
+.guide-callout{border-color:#111}
+.guide-callout p{color:#111}
+.guide-sources p,.guide-sources a{color:#555}
+.guide-cta{background:#111;color:#fff}
+.guide-cta p{color:#ddd}
+.guide-cta .action{background:#fff;color:#111;border-color:#fff}
+.guide-cta .action:hover{background:#111;color:#fff}
+.guide-next{border-color:#bbb}
+.guide-next span{color:#555}
+.guide-next:hover strong{color:#111;text-decoration:underline}
+@media(max-width:850px){
+  .cover-layout{padding-top:54px}
+  .title-main{font-size:18vw}
+  .title-second span{font-size:14vw}
+  .title-second em{font-size:6vw}
+  .work-grid{gap:65px 28px}
+}
+@media(max-width:700px){
+  html{scroll-padding-top:72px}
+  .nav-inner{min-height:65px}
+  .brand-logo{width:clamp(140px,43vw,170px)}
+  .nav-links{border-color:#bbb}
+  .nav-links .nav-post{border:0;padding:10px 0}
+  .cover-layout{padding-top:clamp(44px,9vw,70px);padding-bottom:60px}
+  .title-main{font-size:clamp(5rem,24vw,10rem);line-height:.75}
+  .title-second{justify-content:flex-start;padding-left:8%;margin-top:15px}
+  .title-second em{font-size:clamp(2.4rem,10vw,4.5rem)}
+  .title-second span{font-size:clamp(4.2rem,19vw,7rem)}
+  .cover-bottom{margin-top:55px;padding-top:20px;align-items:start;flex-direction:row}
+  .cover-intro{font-size:1rem;max-width:470px}
+  .cover-mark{width:75px;flex:none}
+  .section{padding-block:65px}
+  .section-head{gap:18px;margin-bottom:35px}
+  .section-head h2,.section-heading{font-size:clamp(3.1rem,13vw,4.8rem)}
+  .work-grid{grid-template-columns:1fr;gap:58px}
+  .film-card:nth-child(5){grid-column:auto}
+  .film-image img,.film-card:nth-child(2) .film-image img,.film-card:nth-child(3) .film-image img,.film-card:nth-child(4) .film-image img,.film-card:nth-child(5) .film-image img{aspect-ratio:1.48}
+  .film-main-link h3{font-size:clamp(2.45rem,11vw,3.6rem)}
+  .development-inner{grid-template-columns:1fr;gap:36px;padding-bottom:70px}
+  .development-label{border:0;padding:0}
+  .development-mark{width:95px}
+  .development h2{font-size:clamp(3.9rem,13vw,6rem)}
+  .development-confessions h2{font-size:clamp(3.1rem,11vw,5rem)}
+  .development-body>p{font-size:1.25rem;line-height:1.45}
+  .development-foot{gap:15px}
+  .post-display{font-size:clamp(3.4rem,12.5vw,6.6rem);margin-block:42px}
+  .post-art-info h3{font-size:2rem}
+  .case-study{margin-bottom:65px}
+  .detail-title{font-size:clamp(3.2rem,10vw,6rem);line-height:1}
+  .detail-still{aspect-ratio:1.45}
+  .guide-title{font-size:clamp(2.9rem,11vw,5rem)}
+}
+@media(max-width:430px){
+  .cover-bottom{gap:15px}
+  .cover-mark{width:52px;margin-top:5px}
+  .title-main{font-size:23vw}
+  .title-second{padding-left:7%;gap:10px}
+  .title-second span{font-size:19vw}
+  .development h2{font-size:12vw}
+  .development-confessions h2{font-size:10.4vw}
+  .post-display{font-size:12vw}
+  .post-art-info{display:block}
+  .post-art-info p{margin-top:8px}
+}
+
+@media(max-width:390px){.detail-title{font-size:clamp(2.75rem,9.5vw,3.2rem)}}
+.detail-still[src*="housewarming"]{aspect-ratio:1475/1080;max-height:850px;object-fit:contain;background:#eee}
+
+/* V2.1 — a direct opening, six equal films and compact development rows. */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+#films{padding-top:clamp(28px,4.5vw,64px)}
+.film-card:nth-child(5),.film-card:nth-child(6){grid-column:auto;width:100%;margin:0}
+.film-card:nth-child(5) .film-image img,.film-card:nth-child(6) .film-image img{aspect-ratio:1.5;object-fit:cover}
+.film-card:nth-child(6) .film-image img{object-position:50% 50%}
+.film-info,.film-award{border-top:0}
+.film-info{padding-top:2px}
+.film-award{padding-top:4px;margin-top:12px}
+.development-inner{display:block;padding-top:clamp(22px,3vw,38px);padding-bottom:clamp(35px,5vw,70px)}
+.development-label{display:block;padding:0;border:0}
+.development .development-label h2{font:600 .75rem/1.5 var(--body);letter-spacing:.1em;margin:0 0 clamp(22px,3vw,38px);text-transform:uppercase}
+.development-projects{width:100%}
+.development-body,.development-body+.development-body{display:grid;grid-template-columns:minmax(0,.88fr) minmax(0,1.12fr);column-gap:clamp(28px,5vw,76px);row-gap:clamp(16px,2vw,28px);align-items:start;border-top:1px solid #111;margin:0;padding:clamp(27px,3.4vw,45px) 0 clamp(42px,5vw,68px)}
+.development-body:last-child{padding-bottom:0}
+.development-body h3,.development-confessions h3,.development-blob h3{grid-column:1;grid-row:1 / 3;font:700 clamp(3.1rem,5.5vw,6.4rem)/.94 var(--display);letter-spacing:-.035em;text-transform:uppercase;overflow-wrap:normal;margin:0;min-width:0}
+.development-confessions h3{font-size:clamp(2.85rem,4.85vw,5.7rem)}
+.development-body>p{grid-column:2;font-size:clamp(1.15rem,1.75vw,1.52rem);line-height:1.46;letter-spacing:-.012em;margin:0;max-width:640px}
+.development-foot{grid-column:2;display:flex;gap:14px 24px;align-items:flex-start;border:0;padding:0;font-size:.8125rem}
+.development-foot span{max-width:300px}
+.development-foot a{text-align:left}
+.about .section-heading{margin:0}
+.about-story{padding-top:0}
+.programmes-heading h3{margin:0}
+.contact-heading{margin:0;font-size:clamp(3.7rem,7vw,7rem)}
+.contact-detail{padding-top:8px}
+.footer-arrow{width:clamp(94px,11vw,150px);height:auto;flex:none}
+@media(max-width:900px){
+  .development-body,.development-body+.development-body{grid-template-columns:1fr;row-gap:18px}
+  .development-body h3,.development-confessions h3,.development-blob h3{grid-column:1;grid-row:auto;font-size:clamp(3.25rem,9vw,5.7rem)}
+  .development-confessions h3{font-size:clamp(3.15rem,8.2vw,5.2rem)}
+  .development-body>p,.development-foot{grid-column:1}
+}
+@media(max-width:700px){
+  #films{padding-top:23px}
+  .film-card:nth-child(5) .film-image img,.film-card:nth-child(6) .film-image img{aspect-ratio:1.48}
+  .development-inner{padding-top:25px;padding-bottom:53px}
+  .development .development-label h2{margin-bottom:19px}
+  .development-body,.development-body+.development-body{padding:26px 0 38px;gap:17px}
+  .development-body h3,.development-blob h3{font-size:clamp(3rem,12vw,5.5rem)}
+  .development-confessions h3{font-size:clamp(2.6rem,9.5vw,4.6rem)}
+  .development-body>p{font-size:1.125rem;line-height:1.5}
+  .development-foot{font-size:.8125rem;flex-direction:column;align-items:flex-start;gap:8px}
+  .development-foot span{max-width:none}
+  .about-grid{gap:25px}
+  .contact-heading{font-size:clamp(3.6rem,13vw,5.3rem)}
+  .site-footer{display:grid;grid-template-columns:1fr auto;align-items:start;gap:18px 12px}
+  .footer-links{grid-column:1;grid-row:2}
+  .footer-arrow{grid-column:2;grid-row:1 / 3;align-self:end;width:clamp(80px,22vw,125px)}
+}
+
+/* The original wordmark remains an image; Manrope carries the reading text. */
+.film-main-link h3{font-size:clamp(2rem,3.35vw,3.25rem);font-weight:700;line-height:1.08;letter-spacing:-.045em;overflow-wrap:normal}
+.development-body h3,.development-blob h3{font-size:clamp(2rem,4.15vw,3.8rem);line-height:1.02;letter-spacing:-.055em}
+.development-confessions h3{font-size:clamp(1.9rem,3.4vw,3.2rem);line-height:1.07;letter-spacing:-.055em}
+.about .section-heading,.post-banner .section-heading{font-size:clamp(3rem,5.8vw,5.5rem);line-height:1.06;letter-spacing:-.045em}
+.programme-list a{grid-template-columns:70px minmax(0,1.1fr) minmax(0,1fr)}
+.programme-list strong{font-size:clamp(1.1rem,1.65vw,1.45rem);line-height:1.2;letter-spacing:-.03em}
+.contact-heading{font-size:clamp(3rem,5.8vw,5.5rem);line-height:1.08;letter-spacing:-.055em}
+.contact-detail .contact-policy{font-size:.875rem;line-height:1.6;margin:18px 0 0;color:#555}
+.footer-arrow{width:clamp(47px,5.5vw,75px)}
+.post-display{font-size:clamp(2rem,9vw,8rem);line-height:1.03;letter-spacing:-.055em}
+.detail-title{font-size:clamp(2.35rem,7vw,6.5rem);line-height:1.04;letter-spacing:-.055em}
+.detail-grid h2,.guide-title{font-size:clamp(2.1rem,5vw,5.5rem);line-height:1.08}
+.guide-copy h2{font-size:clamp(1.75rem,3vw,2.5rem)}
+.film-image .film-preview{position:absolute;inset:0;z-index:1;width:100%;height:100%;object-fit:cover;opacity:0;pointer-events:none;transition:opacity .24s ease;background:#111}
+.film-image.is-preview-playing .film-preview{opacity:1}
+@media(max-width:900px){
+  .development-body h3,.development-blob h3{font-size:clamp(2rem,7.5vw,4rem)}
+  .development-confessions h3{font-size:clamp(1.85rem,6.3vw,3.5rem)}
+}
+@media(max-width:700px){
+  .film-main-link h3{font-size:clamp(2rem,7.5vw,2.75rem)}
+  .development-body h3,.development-blob h3{font-size:clamp(1.9rem,8.3vw,3.6rem)}
+  .development-confessions h3{font-size:clamp(1.65rem,7vw,3.1rem)}
+  .programme-list a{grid-template-columns:70px minmax(0,1fr)}
+  .programme-list strong{font-size:1.2rem}
+  .programme-detail{grid-column:2;grid-row:2}
+  .contact-heading{font-size:clamp(3rem,10vw,4rem)}
+  .footer-arrow{width:clamp(40px,11vw,62px)}
+  .post-display{font-size:clamp(2rem,9vw,4rem)}
+  .detail-title{font-size:clamp(2.35rem,7vw,4rem)}
+  .guide-title{font-size:clamp(2.1rem,7.5vw,3.5rem)}
+}
+@media(hover:none),(prefers-reduced-motion:reduce){
+  .film-image .film-preview{display:none}
+}
+
+/* V2.2 — Bricolage gives the editorial display type a more human shape. */
+:root[data-theme="mono"]{--display:'Bricolage Grotesque',Arial,sans-serif;--utility:'IBM Plex Mono',monospace}
+#films{padding-top:clamp(24px,3.7vw,54px)}
+.work-grid{grid-template-columns:minmax(0,1.28fr) minmax(0,.82fr);column-gap:clamp(27px,4.1vw,62px);row-gap:clamp(70px,8vw,116px)}
+.film-card:nth-child(2){padding-top:clamp(55px,7.2vw,104px)}
+.film-card:first-child .film-image img{aspect-ratio:1.48;object-position:50% 49%}
+.film-card:nth-child(2) .film-image img{aspect-ratio:1.14;object-position:52% 50%}
+.film-main-link h3{font-size:clamp(2.25rem,3.95vw,4.15rem);line-height:1.03;letter-spacing:-.055em;text-transform:none;font-weight:800;margin:16px 0 7px;overflow-wrap:normal}
+.film-card:first-child .film-main-link h3{font-size:clamp(3.2rem,5.4vw,5.45rem)}
+.film-info p{font-size:.9375rem;line-height:1.55}
+.film-title-row{display:block}
+.film-title-row h3{margin-bottom:12px}
+.bafta-lockup{display:flex;align-items:center;gap:clamp(15px,2vw,27px);padding:12px 0 8px;border-top:1px solid #111}
+.bafta-lockup img{display:block;flex:none;width:clamp(115px,11.5vw,150px);height:auto;filter:grayscale(1) brightness(0)}
+.bafta-lockup span{font:500 clamp(.6875rem,.95vw,.8rem)/1.45 var(--utility);text-transform:uppercase;letter-spacing:-.025em}
+.eyebrow,.development .development-label h2,.programme-year,.programme-detail,.contact-policy{font-family:var(--utility)}
+.development-body h3,.development-confessions h3,.development-blob h3{font-weight:800;letter-spacing:-.065em;text-transform:none}
+.development-blob h3{text-transform:uppercase}
+.about .section-heading,.post-banner .section-heading,.contact-heading{font-weight:800;letter-spacing:-.055em}
+@media(max-width:900px){
+  .work-grid{grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr)}
+  .film-card:nth-child(2){padding-top:clamp(30px,5vw,55px)}
+  .film-card:first-child .film-main-link h3{font-size:clamp(2.6rem,5vw,4rem)}
+  .bafta-lockup{gap:14px}
+  .bafta-lockup img{width:105px}
+  .bafta-lockup span{font-size:.6875rem}
+}
+@media(max-width:700px){
+  .work-grid{grid-template-columns:minmax(0,1fr);row-gap:clamp(49px,10vw,70px)}
+  .film-card:nth-child(2){padding-top:0}
+  .film-card:first-child .film-image img,.film-card:nth-child(2) .film-image img{aspect-ratio:1.48}
+  .film-card:first-child .film-main-link h3{font-size:clamp(2.8rem,11vw,4.25rem)}
+  .film-main-link h3{font-size:clamp(2.2rem,8.6vw,3.4rem)}
+  .bafta-lockup img{width:clamp(104px,27vw,136px)}
+  .bafta-lockup span{font-size:clamp(.675rem,2.5vw,.8rem)}
+  .film-info p{font-size:.875rem}
+}
+
+/* Homepage V2.3: regular grid and a lighter, uppercase Bricolage trial. */
+.home-v23 .work-grid{grid-template-columns:repeat(2,minmax(0,1fr));column-gap:clamp(26px,4.2vw,62px);row-gap:clamp(58px,7vw,98px)}
+.home-v23 .film-card:nth-child(2){padding-top:0}
+.home-v23 .film-card .film-image img{aspect-ratio:1.5;object-fit:cover}
+.home-v23 .film-card .film-main-link h3,.home-v23 .film-card:first-child .film-main-link h3{font-family:var(--display);font-size:clamp(2.2rem,3.65vw,3.65rem);font-weight:500;line-height:1.07;letter-spacing:-.025em;text-transform:uppercase;margin:17px 0 8px}
+.home-v23 .film-title-row h3{margin-bottom:12px}
+.home-v23 .bafta-lockup img{width:clamp(127px,12.65vw,165px)}
+.home-v23 .bifa-award img{width:105px;max-height:64px}
+.home-v23 .development-confessions h3{max-width:16ch;text-wrap:balance}
+.home-v23 .development-confessions .development-foot{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:clamp(20px,3vw,45px);align-items:start;font-size:.875rem;line-height:1.55}
+.home-v23 .development-credit-lines{display:grid;gap:8px;min-width:0}
+.home-v23 .development-credit-lines span{max-width:none}
+.home-v23 .development-confessions .development-foot>span{max-width:none;white-space:nowrap}
+.home-v23 .about-heading-lockup{display:flex;align-items:center;gap:clamp(16px,2vw,30px)}
+.home-v23 .about-heading-lockup img{width:clamp(58px,7vw,92px);height:auto;flex:none}
+@media(max-width:900px){
+  .home-v23 .development-confessions .development-foot{grid-template-columns:1fr;row-gap:12px}
+}
+@media(max-width:700px){
+  .home-v23 .work-grid{grid-template-columns:minmax(0,1fr);row-gap:clamp(49px,10vw,70px)}
+  .home-v23 .film-card .film-image img{aspect-ratio:1.48}
+  .home-v23 .film-card .film-main-link h3,.home-v23 .film-card:first-child .film-main-link h3{font-size:clamp(2.2rem,8.5vw,3.4rem)}
+  .home-v23 .bafta-lockup img{width:clamp(115px,29.7vw,150px)}
+  .home-v23 .about-heading-lockup img{width:clamp(47px,12vw,68px)}
+  .home-v23 .arrow-menu{display:flex;align-items:center;justify-content:center;width:46px;height:46px;min-height:46px;padding:8px;border:0;background:transparent;color:#111}
+  .home-v23 .arrow-menu-lines{display:grid;gap:1px;align-content:center}
+  .home-v23 .arrow-menu-lines img{display:block;width:25px;height:auto}
+  .home-v23 .arrow-menu-lines img:first-child,.home-v23 .arrow-menu-lines img:last-child{transform:scaleX(-1)}
+  .home-v23 .arrow-menu:hover{background:#eee}
+}
+
+/* Homepage V2.4: award order, quieter arrows and uppercase development titles. */
+.home-v23 .bafta-award{display:flex;align-items:center;gap:clamp(12px,1.6vw,22px);margin-top:7px;padding-top:4px}
+.home-v23 .bafta-award img{width:clamp(127px,12.65vw,165px);height:auto;flex:none}
+.home-v23 .bafta-award span{font:500 clamp(.6875rem,.95vw,.8rem)/1.45 var(--utility);letter-spacing:-.025em;text-transform:uppercase}
+.home-v23 .development-body h3{text-transform:uppercase}
+.home-v23 .development-confessions h3{max-width:16ch;text-wrap:balance}
+.home-v23 .about-heading-lockup{gap:clamp(12px,1.3vw,18px)}
+.home-v23 .about-heading-lockup img{width:clamp(29px,3.5vw,46px)}
+.home-v23 .post-banner .section-heading{display:flex;align-items:center;gap:clamp(12px,1.8vw,24px)}
+.home-v23 .post-heading-arrow{display:block;width:clamp(40px,5vw,70px);height:auto;flex:none;transform:scaleX(-1)}
+@media(max-width:700px){
+  .home-v23 .bafta-award img{width:clamp(115px,29.7vw,150px)}
+  .home-v23 .bafta-award span{font-size:clamp(.675rem,2.5vw,.8rem)}
+  .home-v23 .about-heading-lockup img{width:clamp(24px,6vw,34px)}
+  .home-v23 .post-banner .section-heading{font-size:clamp(2.7rem,10.8vw,4.8rem);gap:10px}
+  .home-v23 .post-heading-arrow{width:clamp(30px,9vw,48px)}
+}
+
+/* Homepage V2.5: one lighter type voice and a cropped BAFTA mark. */
+.home-v23 .site-header{border-bottom-color:#fff}
+.home-v23 .nav-links{border-top-color:#fff}
+.home-v23 .development-body h3,.home-v23 .about .section-heading,.home-v23 .post-banner .section-heading,.home-v23 .contact-heading{font-family:var(--display);font-weight:500;line-height:1.07;letter-spacing:-.025em}
+.home-v23 .post-heading-arrow{width:clamp(29px,3.5vw,46px)}
+.home-v23 .bafta-mark-crop{display:block;flex:none;width:clamp(113px,11.25vw,147px);overflow:hidden}
+.home-v23 .bafta-mark-crop img{display:block;max-width:none;width:clamp(127px,12.65vw,165px);height:auto}
+.home-v23 .bafta-award .bafta-label{font:500 clamp(.6875rem,.95vw,.8rem)/1.45 var(--utility);letter-spacing:-.025em;text-transform:uppercase}
+@media(max-width:700px){
+  .home-v23 .post-heading-arrow{width:clamp(24px,6vw,34px)}
+  .home-v23 .bafta-mark-crop{width:clamp(102px,26.4vw,134px)}
+  .home-v23 .bafta-mark-crop img{width:clamp(115px,29.7vw,150px)}
+  .home-v23 .bafta-award .bafta-label{font-size:clamp(.675rem,2.5vw,.8rem)}
+}
