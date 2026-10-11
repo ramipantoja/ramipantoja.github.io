@@ -1,4 +1,4 @@
-/* Doom Scroll v0.8 — portrait-first, top-down pixel art.
+/* Doom Scroll v0.9 — portrait-first, top-down pixel art.
    The map and camera use world coordinates; Canvas stays crisp at any phone size.
    SugarSmush retains its independently tested, single-round match-three engine. */
 'use strict';
@@ -7,7 +7,7 @@ const W=360,MAP_W=720,MAP_H=1280;let H=640;
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),lerp=(a,b,t)=>a+(b-a)*t,dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches,coarse=matchMedia('(pointer: coarse)').matches;
 const ui={cover:$('cover'),hud:$('hud'),caption:$('caption'),skip:$('skip'),dialogue:$('dialogue'),pause:$('pause-panel'),end:$('end-panel'),touch:$('touch-controls')};
-const positions={cabin:{x:490,y:764},phone:{x:510,y:411},sign:{x:402,y:1051}},fire={x:360,y:846};
+const positions={cabin:{x:490,y:764},sign:{x:402,y:1051}},fire={x:360,y:846};
 const gateway={x:304,y:1045,w:114,h:93};
 // One continuous main trail skirts cabin 03. Short spurs end at doors/clues.
 const paths=[{x:270,y:1135},{x:292,y:1040},{x:333,y:954},{x:370,y:917},{x:424,y:874},{x:491,y:822},{x:586,y:798},{x:586,y:635},{x:550,y:595},{x:510,y:411},{x:510,y:350}];
@@ -49,12 +49,11 @@ let torch=false,hasTorch=false,hidden=false,near=null,dialogueLines=[],dialogueN
 let keys={},move={x:0,y:0},stickPointer=null,soundEnabled=false,lastStep=0,lastCrackle=0,lastPop=-1,flash=0;
 let pursuit=false,pursuitTime=0,sprintLocked=false,lastEnemyStep=0;
 let stamina=6,sprinting=false,grace=0,caughtTime=0,outroTime=0,nextEvent=20,eventGhost=null,runSeed=1;
-let room=null,outsidePosition=null,search=null,outcome=null,runStartedAt=null,runEndedAt=null;
-const phones=[{id:'martha',name:'Martha',x:214,y:143,place:'03',label:'Martha’s bedside table',color:'#e5a0bf',collected:false},{id:'liam',name:'Liam',x:331,y:662,place:'outside',label:'the laundry hamper',color:'#8bb7ea',collected:false},{id:'willow',name:'Willow',x:610,y:870,place:'outside',label:'Willow’s bag',color:'#c6a9e9',collected:false}];
+let room=null,outsidePosition=null,search=null,outcome=null,runStartedAt=null,runEndedAt=null,encounterDone=false;
+const phones=[{id:'martha',name:'Martha',x:214,y:143,place:'03',label:'Martha’s bedside table',color:'#e5a0bf',collected:false},{id:'liam',name:'Liam',x:331,y:680,place:'outside',label:'Liam’s phone',color:'#8bb7ea',collected:false},{id:'willow',name:'Willow',x:610,y:870,place:'outside',label:'Willow’s phone',color:'#c6a9e9',collected:false}];
 const busDoor={x:192,y:1135};
-const npcs=[{x:414,y:912,c:'#a1aa78',name:'CAMP LEADER',lines:['Missing? We prefer the word disconnected.','Everyone finds themselves here. Eventually.']},{x:303,y:937,c:'#a78b72',name:'NIGHT PORTER',lines:['Martha went back to cabin 03. Liam left something in the laundry hamper. Willow took her bag to the lake.','Find their phones. Take them as evidence. The minibus keys are in the ignition.']},{x:334,y:558,c:'#8d9c97',name:'JUNE',lines:['Liam was messaging someone called Olivia. He kept laughing at his screen.','Then a man with no shoes came out of the woods. I stopped laughing.','They follow light and footsteps. Keep the torch off near them. Hide until they pass.']}];
+const npcs=[{x:414,y:912,c:'#a1aa78',name:'CAMP LEADER',lines:['Missing? We prefer the word disconnected.','Everyone finds themselves here. Eventually.']},{x:303,y:937,c:'#a78b72',name:'NIGHT PORTER',lines:['Martha went back to cabin 03. Liam dropped his phone by the washing line. Willow was taking selfies by the lake.','Find their phones. Take them as evidence. The minibus keys are in the ignition.']},{x:334,y:558,c:'#8d9c97',name:'JUNE',lines:['Liam was messaging someone called Olivia. He kept laughing at his screen.','Then a man with no shoes came out of the woods. I stopped laughing.','They follow light and footsteps. Keep the torch off near them. Hide until they pass.']}];
 function collectedCount(){return phones.filter(p=>p.collected).length;}
-function goalTarget(){return !phones[0].collected?{...positions.cabin,name:'CABIN 03'}:phones.find(p=>!p.collected)||{...busDoor,name:'MINIBUS'};}
 function worldPlayer(){return room?outsidePosition:player;}
 function runSeconds(){return runStartedAt===null?0:Math.max(0,((runEndedAt??Date.now())-runStartedAt)/1000);}
 function eventRandom(){runSeed=(runSeed*1664525+1013904223)>>>0;return runSeed/4294967296;}
@@ -62,7 +61,7 @@ function resetWorld(){
  window.CampAudio?.silence();pursuit=false;pursuitTime=0;sprintLocked=false;lastEnemyStep=0;
  player={x:277,y:1090,face:'up',walk:0,phone:false};
  enemies=[{x:595,y:360,home:{x:595,y:360},patrol:[{x:595,y:360},{x:586,y:635},{x:586,y:779},{x:510,y:411}],color:'#30473a'},{x:303,y:620,home:{x:303,y:620},patrol:[{x:303,y:620},{x:303,y:937},{x:360,y:846},{x:294,y:498}],color:'#4a4039'}].map(e=>({...e,mode:'patrol',last:{...e.home},time:0,active:true,route:[],replan:0,waypoint:0,face:'down'}));enemy=enemies[0];
- phones.forEach(p=>p.collected=false);gameTime=0;torch=false;hasTorch=false;hidden=false;paused=false;keys={};move={x:0,y:0};near=null;flash=0;subtitleTimer=0;dialogueLines=[];dialogueNext=null;stamina=6;grace=5;room=null;outsidePosition=null;search=null;outcome=null;runStartedAt=null;runEndedAt=null;caughtTime=0;outroTime=0;nextEvent=18+Math.random()*7;eventGhost=null;runSeed=Date.now()>>>0;lastStep=0;ui.caption.textContent='';resetStick();window.SugarSmush.reset();window.CampPhones?.reset();
+ phones.forEach(p=>p.collected=false);gameTime=0;torch=false;hasTorch=false;hidden=false;paused=false;keys={};move={x:0,y:0};near=null;flash=0;subtitleTimer=0;dialogueLines=[];dialogueNext=null;stamina=6;grace=5;room=null;outsidePosition=null;search=null;outcome=null;runStartedAt=null;runEndedAt=null;encounterDone=false;caughtTime=0;outroTime=0;nextEvent=18+Math.random()*7;eventGhost=null;runSeed=Date.now()>>>0;lastStep=0;ui.caption.textContent='';resetStick();window.SugarSmush.reset();window.CampPhones?.reset();
  [ui.end,ui.pause,ui.dialogue,$('hide-note'),$('danger'),$('search-progress')].forEach(e=>e.classList.add('hidden'));$('pause').textContent='Ⅱ';updateHUD();
 }
 // Cached navigation keeps woodland patrols moving around cabins and tree trunks.
@@ -83,7 +82,7 @@ function soundFX(kind,amount=1,pan=0){if(soundEnabled)window.CampAudio?.fx(kind,
 function setSound(enabled){soundEnabled=window.CampAudio?.enable(enabled)||false;$('sound').textContent=soundEnabled?'SOUND ON':'SOUND OFF';$('sound').setAttribute('aria-label',soundEnabled?'Mute sound':'Enable sound');$('audio-opt').checked=soundEnabled;}
 function say(text,seconds=4){ui.caption.textContent=text;subtitleTimer=seconds;}
 function start(withIntro=true){
-  resetWorld();runStartedAt=Date.now();ui.cover.classList.add('hidden');setSound($('audio-opt').checked);canvas.focus();
+  resetWorld();runStartedAt=Date.now();$('game').classList.remove('menu-screen');ui.cover.classList.add('hidden');setSound($('audio-opt').checked);canvas.focus();
   if(withIntro){state='intro';introTime=0;lastPop=-1;ui.skip.classList.remove('hidden');ui.hud.classList.add('hidden');ui.touch.classList.add('hidden');}
   else enterPlay();
 }
@@ -97,14 +96,11 @@ function advanceDialogue(){
 }
 function updateHUD(){
  const count=collectedCount();$('viewport').classList.toggle('inside-cabin',!!room);
- $('location-label').textContent=room?'CABIN '+room.n+' • 22:14':'CAMP • 22:14';
- $('objective').textContent=pursuit?(room?'Leave the cabin. Run to the minibus.':'RUN. Get to the minibus.'):
-  !hasTorch?(room?.n==='03'?'Take the torch from the dresser.':'Enter cabin 03. Find the torch.'):
-  !phones[0].collected?'Search Martha’s bedside table in cabin 03.':`Search the laundry and the lakeside bag. ${count} / 3`;
- $('torch-status').textContent=pursuit?'THREE PHONES SECURED · DON’T STOP':hasTorch?(torch?'TORCH ON · THEY CAN SEE YOU':'TORCH OFF · STAY QUIET'):'BEWARE THE PEOPLE IN THE WOODS.';
+ $('location-label').textContent=formatTime(22*60+14+Math.floor(gameTime/60));
+ $('torch-status').textContent=hasTorch?(torch?'TORCH ON':'TORCH OFF'):'';
  for(const p of phones){const b=$('inv-'+p.id);b.disabled=!p.collected||pursuit;b.classList.toggle('collected',p.collected);b.setAttribute('aria-label',p.collected?`Open ${p.name}’s phone`:`${p.name}’s phone — not found`);}
  $('phone-count').textContent=count+' / 3';$('torch').style.opacity=hasTorch?'1':'.45';$('torch').textContent=torch?'OFF':'TORCH';
- const labels={search:'SEARCH',torch:'TAKE',door:'LEAVE',cabin:'ENTER',bush:'HIDE',leave:'LEAVE',bus:'BUS',note:'READ',bunk:'HIDE'};
+ const labels={phone:'TAKE',search:'SEARCH',torch:'TAKE',door:'LEAVE',cabin:'ENTER',bush:'HIDE',leave:'LEAVE',bus:'BUS',note:'READ',bunk:'HIDE'};
  $('action').textContent=search?'SEARCHING':hidden?'LEAVE':labels[near?.kind]||'ACT';
  $('run-label').textContent=pursuit?'RUN!':'RUN';$('run').classList.toggle('running',sprinting);$('stamina-fill').style.width=(stamina/(pursuit?10:6)*100)+'%';
 }
@@ -114,7 +110,7 @@ function enterCabin(c){
  say(c.n==='03'?'Empty bunks. A torch in the dresser. Something buzzing by Martha’s bed.':'The cabin is empty. Search the note on the back wall.',5);updateHUD();return true;
 }
 function leaveCabin(){
- if(!room)return false;cancelSearch();player.x=outsidePosition.x;player.y=outsidePosition.y;room=null;outsidePosition=null;hidden=false;keys={};resetStick();grace=Math.max(grace,3);soundFX('door',.4);$('hide-note').classList.add('hidden');updateHUD();return true;
+ if(!room)return false;cancelSearch();player.x=outsidePosition.x;player.y=outsidePosition.y;room=null;outsidePosition=null;hidden=false;keys={};resetStick();grace=Math.max(grace,3);soundFX('door',.4);$('hide-note').classList.add('hidden');if(collectedCount()===2&&!encounterDone)startEncounter();updateHUD();return true;
 }
 function findNearby(){
  if(hidden)return{kind:'leave',label:'E / ACT — leave hiding place'};
@@ -125,7 +121,7 @@ function findNearby(){
  else{list=[...cabins.map(c=>({kind:'cabin',...cabinDoor(c),cabin:c,label:'E / ACT — enter cabin '+c.n})),{kind:'bus',...busDoor,label:'E / ACT — inspect the minibus'},
   {kind:'sign',...positions.sign,label:'E / ACT — read camp rules'},{kind:'pile',x:fire.x+43,y:fire.y,label:'E / ACT — inspect the burned phones'},
   ...bushes.map(b=>({...b,kind:'bush',label:'E / ACT — hide in bushes'})),...npcs.map(n=>({...n,kind:'npc',label:'E / ACT — talk to '+n.name}))];
-  if(phones[0].collected)list.push(...phones.filter(p=>p.place==='outside'&&!p.collected).map(p=>({...p,kind:'search',label:'E / ACT — search '+p.label})));
+  list.push(...phones.filter(p=>p.place==='outside'&&!p.collected).map(p=>({...p,kind:'phone',label:'E / ACT — take '+p.name+'’s phone'})));
  }
  return list.filter(o=>dist(player,o)<29).sort((a,b)=>dist(player,a)-dist(player,b))[0]||null;
 }
@@ -139,6 +135,7 @@ function interact(){
  if(pursuit)return;
  if(near.kind==='cabin')enterCabin(near.cabin);
  else if(near.kind==='torch'){hasTorch=true;torch=true;soundFX('torch');say('Torch secured. Search the little table beside Martha’s bunk.',5);updateHUD();}
+ else if(near.kind==='phone')pickupPhone(near.id);
  else if(near.kind==='search')beginSearch(near.id);
  else if(near.kind==='note')openDialogue('CABIN '+room.n,window.CampRooms.notes[room.n]);
  else if(near.kind==='bus')openDialogue('THE MINIBUS',['Keys in the ignition. The driver is gone.','Find the three phones. Get to this door and you will leave automatically.']);
@@ -148,7 +145,7 @@ function interact(){
  else if(near.kind==='bush'||near.kind==='bunk')hide('Keep still. Torch off. E / ACT to leave.');
 }
 function hide(message){cancelSearch();if(pursuit){say('They saw you. Run for the minibus.',3);return;}hidden=true;torch=false;$('hide-note').classList.remove('hidden');say(message,4);updateHUD();}
-function toggleTorch(){if(state!=='play'||paused)return;if(!hasTorch){say('There’s a torch in cabin 03.',2);return;}torch=!torch;soundFX('torch');if(hidden&&torch)say('The light gives you away. Turn it off.',3);updateHUD();}
+function toggleTorch(){if(state!=='play'||paused)return;if(!hasTorch){say('You don’t have a torch.',2);return;}torch=!torch;soundFX('torch');if(hidden&&torch)say('The light gives you away. Turn it off.',3);updateHUD();}
 function blocked(x,y){
  if(x<28||x>MAP_W-28||y<30||y>MAP_H-35)return true;
  if(blockers.some(b=>x>b.x-5&&x<b.x+b.w+5&&y>b.y-3&&y<b.y+b.h+4))return true;
@@ -156,13 +153,27 @@ function blocked(x,y){
 }
 function moveBody(body,dx,dy){const collision=body===player&&room?window.CampRooms.blocked:blocked;if(!collision(body.x+dx,body.y))body.x+=dx;if(!collision(body.x,body.y+dy))body.y+=dy;}
 function caught(){state='caught';caughtTime=0;outcome='caught';cancelSearch();hidden=false;torch=false;keys={};resetStick();ui.touch.classList.add('hidden');ui.hud.classList.add('hidden');$('hide-note').classList.add('hidden');say('No last chance. No signal. No way out.',3);flash=.65;soundFX('caught');}
+// A single roll-call ambush after the second phone. It uses the same fair
+// hunter rules, starts behind the player and cannot attack during its reveal.
+function startEncounter(){
+ if(encounterDone||room||collectedCount()!==2||state!=='play')return false;
+ const angle=Math.atan2(busDoor.y-player.y,busDoor.x-player.x)+Math.PI+(eventRandom()-.5)*.8;
+ const desired={x:player.x+Math.cos(angle)*145,y:player.y+Math.sin(angle)*145};let spot=null,score=Infinity;
+ for(let n=0;n<nav.length;n++){if(!nav[n])continue;const q={x:(n%NAV_W)*NAV_STEP+5,y:Math.floor(n/NAV_W)*NAV_STEP+5},d=dist(q,player);if(d<125||d>170)continue;const cost=dist(q,desired);if(cost<score&&lineOfSight(q,player)&&planRoute(q,player).length){score=cost;spot=q;}}
+ if(!spot){const route=planRoute(player,busDoor);spot=route.find(q=>dist(q,player)>125);}
+ if(!spot)return false;
+ encounterDone=true;const home={...spot},target={x:player.x,y:player.y};
+ enemies.push({...spot,home,patrol:[home,{x:303,y:937},{x:586,y:779}],color:'#785e4c',mode:'chase',last:target,time:0,active:true,wake:2,route:[],replan:0,waypoint:0,face:spot.y<player.y?'down':'up',encounter:true});
+ grace=Math.max(grace,4);stamina=6;nextEvent=gameTime+18;flash=.4;
+ say('The speaker crackles: “Roll call. One camper is missing.”\nA figure steps onto the trail behind you.',6);soundFX('notification',.55);hiss(.6,.035,700);soundFX('chase',.65);return true;
+}
 function startPursuit(){
  if(collectedCount()!==3)return false;pursuit=true;pursuitTime=0;hidden=false;torch=false;stamina=10;sprintLocked=false;grace=5;eventGhost=null;
  const origin=worldPlayer(),lastPhone=room?null:phones.find(p=>p.place==='outside'&&dist(player,p)<45),route=planRoute(origin,busDoor),next=lastPhone?.id==='liam'?branches[3][1]:lastPhone?.id==='willow'?branches[2][1]:route[Math.min(12,route.length-1)]||busDoor,angle=Math.atan2(next.y-origin.y,next.x-origin.x)+Math.PI;
  const placed=[];enemies.forEach((e,i)=>{const radius=i?185:145,desired={x:origin.x+Math.cos(angle)*radius,y:origin.y+Math.sin(angle)*radius};let best=null,score=Infinity;
   for(let n=0;n<nav.length;n++){if(!nav[n])continue;const q={x:(n%NAV_W)*NAV_STEP+5,y:Math.floor(n/NAV_W)*NAV_STEP+5},d=dist(q,origin);if(d<115||d>240||((q.x-origin.x)*Math.cos(angle)+(q.y-origin.y)*Math.sin(angle))/d<.2||placed.some(p=>dist(q,p)<28))continue;const cost=dist(q,desired);if(cost<score){score=cost;best=q;}}
   if(best&&planRoute(best,origin).length){e.x=best.x;e.y=best.y;placed.push(best);}
-  Object.assign(e,{active:true,mode:'chase',last:{...origin},time:0,replan:0,route:[]});});
+  Object.assign(e,{active:true,wake:0,mode:'chase',last:{...origin},time:0,replan:0,route:[]});});
  $('hide-note').classList.add('hidden');say(room?'Three phones. Leave the cabin and RUN to the minibus.':'They’re coming. Hold RUN / Shift. Reach the minibus door.',5);soundFX('chase');updateHUD();return true;
 }
 function beginEscape(){
@@ -177,7 +188,7 @@ But someone was watching.`:`${collectedCount()} / 3 phones recovered.
 The camp keeps what it catches.`;
  $('wasted-time').textContent=formatTime(runSeconds());$('retry').focus();tone(110,1.5,.03,'triangle');
 }
-function togglePause(){if(['menu','end','phone','outro','cctv','caught'].includes(state))return;paused=!paused;cancelSearch();ui.pause.classList.toggle('hidden',!paused);keys={};resetStick();$('pause').textContent=paused?'▶':'Ⅱ';if(!paused)canvas.focus();}
+function togglePause(){if(['menu','end','phone','outro','cctv','caught'].includes(state))return;paused=!paused;cancelSearch();ui.pause.classList.toggle('hidden',!paused);keys={};resetStick();$('pause').textContent=paused?'▶':'Ⅱ';if(paused)$('resume').focus();else canvas.focus();}
 function randomEvent(){
  const n=Math.floor(eventRandom()*5);
  if(n===0){say('A phone rings in your pocket. There is no signal.',5);soundFX('notification',.6);}
@@ -226,7 +237,8 @@ function returnFromPhone(){
  player.phone=false;state='play';ui.hud.classList.remove('hidden');ui.touch.classList.remove('hidden');canvas.focus();grace=Math.max(grace,4);
  const count=collectedCount();
  if(count===3&&!pursuit)startPursuit();
- else say('Phone secured. Check the laundry hamper and the bag beside the lake. Keep quiet.',5);
+ else if(count===2&&!encounterDone&&!room)startEncounter();
+ else say('Phone secured.',2);
  updateHUD();
 }
 function openPhone(id){
@@ -247,17 +259,38 @@ function tree(t){
  ctx.restore();
 }
 function cabin(c){
- const x=c.x,y=c.y,w=c.w,h=c.h;rect(x-7,y+h-4,w+21,11,'#10271b85');rect(x+5,y+h+7,w+13,5,'#0a20175e');rect(x,y+38,w,h-38,'#796246');rect(x+w-7,y+40,7,h-40,'#4d4b33');
+ const x=c.x,y=c.y,w=c.w,h=c.h,theme=window.CampRooms.themes[c.n];rect(x-7,y+h-4,w+21,11,'#10271b85');rect(x+5,y+h+7,w+13,5,'#0a20175e');rect(x,y+38,w,h-38,'#796246');rect(x+w-7,y+40,7,h-40,'#4d4b33');
  for(let yy=45;yy<h;yy+=6){rect(x+2,y+yy,w-6,1,'#454d32');rect(x+3,y+yy+1,w-10,1,'#a08155');for(let xx=8;xx<w-8;xx+=28){rect(x+xx,y+yy+3,9,1,'#67543a');rect(x+xx+17,y+yy,1,1,'#b3905c');}}
- rect(x-8,y+3,w+16,37,'#354c3b');rect(x-2,y-4,w+4,9,'#586b48');rect(x+5,y-8,w-10,5,'#73805a');
- for(let row=0;row<5;row++)for(let xx=0;xx<w+10;xx+=11){const px=x-5+xx+(row%2?5:0),py=y+7+row*6;rect(px,py,9,4,['#496247','#435b40','#536748'][(xx+row)%3]);rect(px,py+4,10,1,'#213d2d');rect(px+1,py,5,1,'#78825b50');}
- rect(x-9,y+38,w+18,5,'#21362a');rect(x-7,y+43,w+14,2,'#a28e5b');rect(x+w-27,y+5,11,12,'#676d56');rect(x+w-25,y+3,7,3,'#91927a');rect(x+w-24,y+2,5,1,'#c3b694');rect(x+w-23,y+7,2,6,'#424e3a');
+ rect(x-8,y+3,w+16,37,theme.roof);rect(x-2,y-4,w+4,9,'#586b48');rect(x+5,y-8,w-10,5,'#73805a');
+ for(let row=0;row<5;row++)for(let xx=0;xx<w+10;xx+=11){const px=x-5+xx+(row%2?5:0),py=y+7+row*6;rect(px,py,9,4,row%2?theme.roof:'#435b40');rect(px,py+4,10,1,'#213d2d');rect(px+1,py,5,1,'#78825b50');}
+ rect(x-9,y+38,w+18,5,'#21362a');rect(x-7,y+43,w+14,2,theme.trim);rect(x+w-27,y+5,11,12,'#676d56');rect(x+w-25,y+3,7,3,'#91927a');rect(x+w-24,y+2,5,1,'#c3b694');rect(x+w-23,y+7,2,6,'#424e3a');
  for(const wx of [x+13,x+w-34]){rect(wx-2,y+h-42,26,28,'#3e4530');rect(wx,y+h-40,22,23,c.n==='03'&&hasTorch?'#857044':'#c3a35e');rect(wx+1,y+h-39,7,20,'#dab87655');rect(wx+10,y+h-40,2,24,'#68573a');rect(wx,y+h-29,22,2,'#645333');rect(wx-3,y+h-15,28,3,'#b09362');rect(wx+3,y+h-42,1,4,'#ece0a173');}
  const door=x+w/2;rect(door-12,y+h-34,24,34,'#303f2d');rect(door-9,y+h-31,18,29,'#5d5037');rect(door-7,y+h-29,2,26,'#846b43');rect(door+5,y+h-16,2,2,'#e4c97c');rect(door-19,y+h+1,38,5,'#9b8d64');rect(door-22,y+h+6,44,4,'#6d6b47');for(let yy=1;yy<10;yy+=4)rect(door-20,y+h+yy,40,1,'#c0ad7980');
  rect(door-10,y+h-47,21,10,'#344833');pixelText(c.n,door-6,y+h-39,'#e2d3a0',8);
  rect(x+w-3,y+h-40,2,23,'#6c7251');rect(x+w-8,y+h-39,10,12,'#a8a262');rect(x+w-6,y+h-36,6,7,'#ebd389');rect(x+w-8,y+h-40,10,2,'#344b34');
  // Boots, bags and rain barrels add lived-in detail around the porches.
  rect(x+9,y+h+5,5,4,'#504b33');rect(x+17,y+h+5,5,4,'#504b33');rect(x+w+3,y+h-10,12,12,'#495c4a');rect(x+w+2,y+h-11,14,3,'#75816a');rect(x+w+3,y+h-5,12,1,'#283f31');
+ if(c.n==='01'){
+  // Neglected old bunkhouse: moss, crooked shutter and a hanging planter.
+  for(let i=0;i<8;i++)rect(x+3+i*12,y+13+(i%3)*5,7,3,'#718054');
+  rect(x+9,y+h-41,3,24,'#705e42');rect(x+8,y+h-26,5,2,'#a18d5a');
+  rect(x+37,y+h-14,13,7,'#8b6344');for(let i=0;i<4;i++){rect(x+38+i*3,y+h-19,2,7,'#6e8855');rect(x+37+i*3,y+h-20,3,2,'#c2a674');}
+ }else if(c.n==='02'){
+  // Liam's damp jacket and enamel laundry sign.
+  rect(x+38,y+h-29,10,16,'#506777');rect(x+35,y+h-26,4,9,'#81909a');rect(x+46,y+h-26,4,9,'#718692');
+  rect(x+9,y+45,31,9,'#b0bba2');pixelText('WASH',x+11,y+52,'#3c5149',6);
+  rect(x+2,y+7,14,1,'#1b302a');rect(x+5,y+8,2,5,'#84947d');
+ }else if(c.n==='03'){
+  // Martha has decorated the window with tiny candy-coloured stickers.
+  for(let i=0;i<4;i++)rect(x+16+i*4,y+h-35+(i%2)*7,2,3,['#d498b2','#d6c681','#a8b6ca','#bcc78f'][i]);
+  rect(x+w-34,y+h-40,3,23,'#a08a83');rect(x+w-16,y+h-40,3,23,'#a08a83');
+  rect(x+7,y+10,20,2,'#aea173');rect(x+8,y+12,9,1,'#1c3229');
+ }else{
+  // Willow's purple curtains, cracked panes and discarded tripod.
+  for(const wx of [x+13,x+w-34]){rect(wx+1,y+h-39,4,21,'#a48aab');rect(wx+17,y+h-39,4,21,'#786782');rect(wx+12,y+h-36,1,9,'#e0d6ae');rect(wx+8,y+h-27,5,1,'#e0d6ae');}
+  rect(x+w-9,y+11,8,15,'#1b3029');rect(x+w-14,y+22,16,2,'#74765a');
+  rect(x+36,y+h-18,2,17,'#849488');rect(x+31,y+h-17,12,2,'#b5baa1');rect(x+31,y+h-16,2,12,'#6f7d6a');rect(x+41,y+h-16,2,12,'#6f7d6a');
+ }
  glow(x+w-3,y+h-33,49,'#e2ba4d26');if(c.n==='03'&&hidden)rect(x+18,y+h-34,7,16,'#50462c');
 }
 function person(x,y,color,walk=0,face='down',leader=false,holding=false){
@@ -315,9 +348,7 @@ function laundryLine(){
 }
 function supplyBin(){rect(440,972,33,27,'#48563c');rect(437,970,39,5,'#73805b');rect(442,977,2,18,'#90a27350');rect(439,999,35,2,'#21382a');pixelText('BIN',448,986,'#bdc49e',7);}
 function campBag(){rect(284,975,10,13,'#806b42');rect(284,976,10,2,'#b9a26a');rect(294,984,7,5,'#91846a');rect(286,979,6,5,'#a38b5c');rect(288,973,4,2,'#4b543d');}
-function evidenceProp(p){const x=p.x,y=p.y;if(p.id==='liam'){rect(x-14,y-13,29,18,'#957e57');rect(x-16,y-16,33,5,'#bda374');for(let i=0;i<4;i++)rect(x-12+i*7,y-10,2,13,'#5e5d3e');rect(x-10,y-22,20,7,'#b3c2ac');rect(x-8,y-20,16,2,'#e0d8b1');}
- else{rect(x-13,y-15,26,18,'#7c6650');rect(x-10,y-21,20,8,'#b89977');rect(x-6,y-24,12,4,'#475740');rect(x-10,y-12,20,1,'#c6a879');rect(x+5,y-11,4,7,'#5c806e');}if(!p.collected&&dist(worldPlayer(),p)<70)glow(x,y-6,21,'#a8c99816');}
-function phoneOnGround(p){const pulse=(Math.sin(transition*3)+1)/2;glow(p.x,p.y-4,34+pulse*10,'#84d7d246');rect(p.x-5,p.y-12,10,15,'#263e3b');rect(p.x-4,p.y-11,8,12,'#92d7d2');rect(p.x-2,p.y-11,4,1,'#38574f');for(let i=0;i<6;i++)rect(p.x-3+(i%2)*3,p.y-8+Math.floor(i/2)*3,2,2,['#ed97c0','#e4c766','#a9cf8d'][i%3]);rect(p.x-1,p.y+1,2,1,'#dbf4e5');}
+function phoneOnGround(p){const pulse=(Math.sin(transition*3)+1)/2;glow(p.x,p.y-4,38+pulse*10,p.id==='liam'?'#7fb7ee66':p.id==='willow'?'#c496ed66':'#84d7d246');rect(p.x-5,p.y-12,10,15,'#263e3b');rect(p.x-4,p.y-11,8,12,p.color||'#92d7d2');rect(p.x-2,p.y-11,4,1,'#38574f');for(let i=0;i<6;i++)rect(p.x-3+(i%2)*3,p.y-8+Math.floor(i/2)*3,2,2,['#ed97c0','#e4c766','#a9cf8d'][i%3]);rect(p.x-1,p.y+1,2,1,'#dbf4e5');}
 // Final shot: a person inside the camp watches the exit camera. The monitor
 // shows the minibus depart; this view stays behind the Instagram end card.
 function drawCCTV(){
@@ -364,7 +395,7 @@ function draw(){
   [0,1,2,3,4].forEach(i=>{const a=i*Math.PI*2/5,x=fire.x+Math.cos(a)*52,y=fire.y+Math.sin(a)*33;entities.push({y,draw:()=>{person(x,y,['#b1aa7b','#98a17c','#beb382','#929c78','#a0a980'][i],0,y>fire.y?'up':'down',true);if(i===0&&(state==='menu'||introTime<14)){const t=(state==='menu'?transition:introTime)%3;if(t<1.2){const k=t/1.2;rect(lerp(x,fire.x,k),lerp(y-20,fire.y-8,k)-Math.sin(k*Math.PI)*27,4,7,'#addcd2');}}}});});
  }else{npcs.forEach(n=>entities.push({y:n.y,draw:()=>person(n.x,n.y,n.c,0,'down',n.name==='CAMP LEADER')}));if(!hidden&&state!=='outro')entities.push({y:player.y,draw:()=>person(player.x,player.y,'#c08458',player.walk,player.face,false,player.phone)});enemies.filter(e=>e.active).forEach(e=>entities.push({y:e.y,draw:()=>{pursuer(e,transition*4);}}));if(eventGhost)entities.push({y:eventGhost.y,draw:()=>person(eventGhost.x,eventGhost.y,'#2c382e',0,'down',true)});}
  if(state==='intro'&&introTime>19)for(let i=0;i<5;i++){const k=clamp((introTime-19-i*.85)/5,0,1);if(k>0){const x=lerp(271,287+i*14,k),y=lerp(1193,1040+i*11,k);entities.push({y,draw:()=>person(x,y,['#a4946c','#829c8c','#bc916c','#929e73','#c08458'][i],k*14,'up')});}}
- phones.filter(p=>p.place==='outside').forEach(p=>entities.push({y:p.y,draw:()=>evidenceProp(p)}));entities.sort((a,b)=>a.y-b.y).forEach(e=>e.draw());
+ phones.filter(p=>p.place==='outside'&&!p.collected).forEach(p=>entities.push({y:p.y,draw:()=>phoneOnGround(p)}));entities.sort((a,b)=>a.y-b.y).forEach(e=>e.draw());
  if(torch&&hasTorch&&!['menu','intro','phone'].includes(state)){const a={up:-Math.PI/2,down:Math.PI/2,left:Math.PI,right:0}[player.face],px=player.x,py=player.y-13;ctx.save();ctx.beginPath();ctx.moveTo(px,py);ctx.arc(px,py,126,a-.53,a+.53);ctx.closePath();ctx.clip();glow(px,py,136,'#ece2b04b');ctx.restore();rect(px+Math.cos(a)*9,py+Math.sin(a)*9,3,3,'#f3df9d');}
  // Occasional fireflies; subtle movement is disabled for reduced-motion users.
  if(!reduced)specks.forEach(p=>{const a=(Math.sin(transition+p.s)+1)/2;if(a>.8)rect(p.x+Math.sin(transition*.3+p.s)*3,p.y,1,1,'#c2cc884f');});
@@ -383,7 +414,7 @@ function fitViewport(){const r=$('viewport').getBoundingClientRect();if(r.width>
 if(typeof ResizeObserver!=='undefined')new ResizeObserver(fitViewport).observe($('viewport'));window.addEventListener('resize',fitViewport);
 phones.forEach(p=>$('inv-'+p.id).onclick=()=>openPhone(p.id));
 $('run').addEventListener('pointerdown',e=>{e.preventDefault();if(state==='play'&&!paused){keys.Shift=true;$('run').setPointerCapture(e.pointerId);}});['pointerup','pointercancel','lostpointercapture'].forEach(t=>$('run').addEventListener(t,()=>keys.Shift=false));
-$('start').onclick=()=>start(true);$('explore').onclick=()=>start(false);$('skip').onclick=enterPlay;$('continue').onclick=advanceDialogue;$('action').onclick=interact;$('torch').onclick=toggleTorch;$('sound').onclick=()=>setSound(!soundEnabled);$('audio-opt').onchange=e=>setSound(e.target.checked);$('pause').onclick=togglePause;$('resume').onclick=togglePause;$('restart-pause').onclick=()=>start(false);$('retry').onclick=()=>start(false);$('replay-intro').onclick=()=>start(true);
+$('start').onclick=()=>start(true);$('skip').onclick=enterPlay;$('continue').onclick=advanceDialogue;$('action').onclick=interact;$('torch').onclick=toggleTorch;$('sound').onclick=()=>setSound(!soundEnabled);$('audio-opt').onchange=e=>setSound(e.target.checked);$('pause').onclick=togglePause;$('resume').onclick=togglePause;$('retry').onclick=()=>start(false);$('replay-intro').onclick=()=>start(true);
 $('full').onclick=()=>{if(document.fullscreenElement)document.exitFullscreen?.().catch(()=>{});else document.documentElement.requestFullscreen?.().catch(()=>say('Fullscreen is unavailable in this browser.',3));};document.querySelector('.wordmark').onclick=e=>{e.preventDefault();if(state!=='menu')togglePause();};
 window.addEventListener('keydown',e=>{if(e.defaultPrevented||state==='phone')return;if(e.target.tagName==='INPUT'||e.target.tagName==='BUTTON'&&['Enter',' '].includes(e.key))return;const k=e.key.length===1?e.key.toLowerCase():e.key;if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight',' ','e','f','Escape'].includes(k))e.preventDefault();if(e.repeat)return;if(k==='Escape'){togglePause();return;}if(k==='e'||k==='Enter'){interact();return;}if(k==='f'){toggleTorch();return;}keys[k]=true;});window.addEventListener('keyup',e=>{keys[e.key.length===1?e.key.toLowerCase():e.key]=false;});
 window.addEventListener('blur',()=>{keys={};resetStick();if(['play','intro','dialogue'].includes(state)&&!paused)togglePause();});document.addEventListener('visibilitychange',()=>{if(document.hidden){keys={};resetStick();if(['play','intro','dialogue'].includes(state)&&!paused)togglePause();}});

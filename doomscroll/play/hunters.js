@@ -5,7 +5,7 @@
  const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
  function speed(count,chasing=false){return(chasing?chaseSpeeds:patrolSpeeds)[Math.max(0,Math.min(3,count))];}
  function update(enemies,dt,o){let threatened=false,caught=false;
-  for(const e of enemies){if(!e.active)continue;e.time+=dt;const d=distance(e,o.player),visible=!o.inside&&(!o.hidden||o.torch)&&o.grace<=0;
+  for(const e of enemies){if(!e.active)continue;if(e.wake>0){e.wake=Math.max(0,e.wake-dt);continue;}e.time+=dt;const d=distance(e,o.player),visible=!o.inside&&(!o.hidden||o.torch)&&o.grace<=0;
    const axis={up:[0,-1],down:[0,1],left:[-1,0],right:[1,0]}[e.face]||[0,1],front=((o.player.x-e.x)*axis[0]+(o.player.y-e.y)*axis[1])/Math.max(1,d)>-.15;
    const sees=visible&&d<(o.torch?205:105)&&(front||e.mode==='chase')&&o.lineOfSight(e,o.player),hears=visible&&o.sprinting&&d<120;
    if(o.pursuit||sees||hears){e.mode='chase';e.last={...o.player};e.time=0;}
