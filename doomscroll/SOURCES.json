@@ -1,0 +1,15 @@
+{
+  "camp_photo": {
+    "photographer": "Clay Banks",
+    "url": "https://unsplash.com/photos/a-frame-cabin-in-the-woods-with-a-green-door-DS2rtg-Nbgk",
+    "license": "https://unsplash.com/license",
+    "note": "Genuine photography used for a fictional camp advert. The photograph is not of the Welsh story location."
+  },
+  "real_news": {
+    "url": "https://www.bbc.co.uk/news/articles/cvg7v7j3wqwo",
+    "checked": "11 October 2026; headline and page metadata verified against BBC. Short linked article excerpt; no BBC article photography copied."
+  },
+  "fictional_news": "ODIN, Hush Technologies and The Valley Brief are fictional story-world material.",
+  "wordmark": "Pacifico, licensed under SIL Open Font License. See RASPAGRAM-FONT-LICENSE.txt.",
+  "game": "Uses the existing /doomscroll/play/ game. This change updates the landing page only."
+}
