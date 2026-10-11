@@ -1,9 +1,8 @@
 {
   "camp_photo": {
-    "photographer": "Stanley Kustamin",
-    "url": "https://unsplash.com/photos/cabins-nestled-in-a-misty-mountain-tea-plantation-7S9WhJv0hbQ",
-    "license": "https://unsplash.com/license",
-    "note": "Real photograph of Bobocabin Sukawana, Indonesia. Used as scenery for a fictional Welsh camp, not a photograph of the story location."
+    "type": "User-supplied waterfall photograph",
+    "source": "Uploaded image(1).png; 11 October 2026",
+    "note": "Original photograph retained; responsive CSS crop only."
   },
   "real_news": {
     "url": "https://www.bbc.co.uk/news/articles/cvg7v7j3wqwo",
@@ -13,7 +12,15 @@
   "wordmark": "Pacifico, licensed under SIL Open Font License. See RASPAGRAM-FONT-LICENSE.txt.",
   "game": "Latest Night One v0.8 survival game: cabin search, active hunters, automatic minibus exit, elapsed-time ending.",
   "fence_photo": {
-    "type": "Edited fictional image using built-in image generation",
-    "note": "Natural hair and expression; smooth electric wires, insulators and warning pictogram. Not a real participant or real event."
-  }
+    "type": "User-supplied Jurassic Park film still",
+    "source": "Uploaded image.png; 11 October 2026",
+    "note": "Original still retained. Responsive CSS crop with separate webpage headline and high-voltage sticker."
+  },
+  "willow_photo": {
+    "type": "Built-in image generation edit",
+    "prompt": "Change only the pill-bottle label from GLOW to Regime X, retain DIET PILLS and preserve the woman, pose, clothes, setting, lighting and composition.",
+    "file": "willow-regime-x.jpg",
+    "game_file": "play/assets/willow-selfie.jpg"
+  },
+  "favicon": "Byte-identical copy of https://raspfilms.com/favicon.png."
 }

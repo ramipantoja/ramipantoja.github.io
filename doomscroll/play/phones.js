@@ -27,7 +27,7 @@
  function open(id,callback){if(active||!['liam','willow'].includes(id))return;active=true;owner=id;done=callback;
   el('clue-phone').classList.remove('hidden');el('game').setAttribute('inert','');document.body.classList.add('phone-active');
   const chat=id==='liam';el('clue-phone').classList.toggle('is-selfie',!chat);el('chat-page').classList.toggle('hidden',!chat);el('selfie-page').classList.toggle('hidden',chat);
-  el('clue-owner').textContent=chat?'LIAM’S PHONE':'WILLOW’S PHONE';el('clue-title').textContent=chat?'Olivia Dreams':'Willow’s feed';el('clue-subtitle').textContent=chat?'Private chat · cached offline':'GLOW diet pills · paid partnership';el('clue-avatar').textContent=chat?'OD':'W';el('clue-footer-text').textContent=chat?'Scroll to read. Something is wrong.':'Saved to camera roll. Where is Willow?';el('close-clue').focus();
+  el('clue-owner').textContent=chat?'LIAM’S PHONE':'WILLOW’S PHONE';el('clue-title').textContent=chat?'Olivia Dreams':'Willow’s feed';el('clue-subtitle').textContent=chat?'Private chat · cached offline':'Regime X diet pills · paid partnership';el('clue-avatar').textContent=chat?'OD':'W';el('clue-footer-text').textContent=chat?'Scroll to read. Something is wrong.':'Saved to camera roll. Where is Willow?';el('close-clue').focus();
  }
  function close(){if(!active)return;active=false;el('clue-phone').classList.add('hidden');el('game').removeAttribute('inert');document.body.classList.remove('phone-active');const cb=done;done=null;owner=null;if(cb)cb();}
  function reset(){active=false;owner=null;done=null;el('clue-phone').classList.add('hidden');el('game').removeAttribute('inert');document.body.classList.remove('phone-active');el('chat-page').scrollTop=0;el('selfie-page').scrollTop=0;}
