@@ -18,3 +18,8 @@
 /* Keep narrative subtitles above the nearby-action prompt and touch controls. */
 #caption{bottom:195px}#hide-note{bottom:163px}#danger{top:97px}
 @media(max-height:650px){#caption{bottom:174px}#hide-note{bottom:143px}}
+
+/* Search and session-ending feedback. */
+#search-progress{position:absolute;left:25px;right:25px;bottom:151px;z-index:4;padding:10px 12px;background:#12251ded;border:1px solid #a6b98c;color:#e0d6b1;font-size:9px;letter-spacing:.4px;pointer-events:none}#search-progress>div{height:4px;background:#45593c;margin-top:8px}#search-fill{height:100%;display:block;background:#ddc98c;width:0}.wasted-box{border-top:1px solid #7b8c704d;border-bottom:1px solid #7b8c704d;display:flex;flex-wrap:wrap;align-items:baseline;gap:9px;padding:13px 0;margin:12px 0 16px}.wasted-box>span{font-size:9px;letter-spacing:1.3px}.wasted-box strong{font-size:28px;color:#ed996a}.wasted-box small{font-size:10px;color:#b6bc9d}.replay-button{margin:0 0 20px;min-height:48px}#end-panel .ending-card #end-text{margin:12px 0;font-size:11px}.ending-card h2{font-size:43px}@media(max-height:650px){#search-progress{bottom:132px}.wasted-box{padding:9px 0;margin:9px 0 12px}.wasted-box strong{font-size:23px}.replay-button{margin-bottom:14px}.ending-card h2{font-size:36px}}
+
+.inside-cabin #caption{top:96px;bottom:auto;font-size:10px;line-height:1.35}.inside-cabin #caption:not(:empty){padding:6px 9px}

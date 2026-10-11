@@ -13,7 +13,7 @@ const comments = [
  [['ben_w','I said one round. Two hours ago.'],['jo_irl','Level 247. Send help.']],
  [['liam_irl','Mate.'],['ben_w','Where is part 2?']],
  [['martha.smush','It is literally 3am.'],['olivia_dreams','Still here? ♡']],
- [['jo_irl','I refuse to look at mine.'],['liam_irl','Ignore limit is doing a lot of work.']],
+ [['jo_irl','I refuse to look at mine.'],['liam_irl','That is a full working day.']],
  [['martha.smush','This is just my actual job.'],['ben_w','Why am I doing unpaid overtime?']],
  []
 ];
@@ -53,6 +53,10 @@ function setScene(n) {
  clearReveal(); scene=n;
  reels.forEach((r,i)=>{r.classList.toggle('active',i===n);r.setAttribute('aria-hidden',String(i!==n));if('inert' in r)r.inert=i!==n;});
  screen.classList.toggle('landed',n===finalScene);
+ screen.classList.toggle('report-view',n===7);
+ if(n!==7){screen.classList.remove('report-dismissed');$('report-dismiss').classList.remove('show');$('ignore-limit').disabled=false;}
+ $('social').inert=n===7||n===finalScene;
+ screen.classList.toggle('article-view',n===0||n===1);
  
  
  $('swipe-hint').hidden=n!==0;
@@ -108,7 +112,8 @@ $('share').addEventListener('click',async()=>{
 });
 $('ignore-limit').addEventListener('click',()=>{
  $('report-dismiss').classList.add('show');
- const button=$('ignore-limit');button.textContent='Limit ignored for today';button.disabled=true;
+ const button=$('ignore-limit');button.textContent='Done';button.disabled=true;
+ screen.classList.add('report-dismissed');
 });
 document.addEventListener('keydown',e=>{
  if($('comments-sheet').open || e.target.closest('a,button,input,textarea,select'))return;
