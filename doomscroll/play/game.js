@@ -1,4 +1,4 @@
-/* Doom Scroll v0.7 — portrait-first, top-down pixel art.
+/* Doom Scroll v0.8 — portrait-first, top-down pixel art.
    The map and camera use world coordinates; Canvas stays crisp at any phone size.
    SugarSmush retains its independently tested, single-round match-three engine. */
 'use strict';
@@ -11,13 +11,13 @@ const positions={cabin:{x:490,y:764},phone:{x:510,y:411},sign:{x:402,y:1051}},fi
 const gateway={x:304,y:1045,w:114,h:93};
 // One continuous main trail skirts cabin 03. Short spurs end at doors/clues.
 const paths=[{x:270,y:1135},{x:292,y:1040},{x:333,y:954},{x:370,y:917},{x:424,y:874},{x:491,y:822},{x:586,y:798},{x:586,y:635},{x:550,y:595},{x:510,y:411},{x:510,y:350}];
-const branches=[[{x:586,y:779},{x:490,y:779}],[{x:510,y:411},{x:385,y:477},{x:294,y:498}],[{x:550,y:595},{x:591,y:592}]];
+const branches=[[{x:586,y:779},{x:490,y:779}],[{x:510,y:411},{x:385,y:477},{x:294,y:498},{x:306,y:555},{x:327,y:600},{x:331,y:662}],[{x:586,y:798},{x:605,y:835},{x:610,y:870}],[{x:331,y:662},{x:303,y:700},{x:303,y:746},{x:285,y:869},{x:303,y:937},{x:333,y:954}]];
 const cabins=[{x:119,y:758,w:113,h:94,n:'01'},{x:135,y:569,w:123,h:95,n:'02'},{x:430,y:650,w:120,h:100,n:'03'},{x:383,y:233,w:108,h:90,n:'04'}];
 const bushes=[{x:429,y:801},{x:575,y:483},{x:267,y:945},{x:560,y:356}];
-const sceneryClearances=[{x:250,y:600,w:128,h:82},{x:304,y:515,w:72,h:67},{x:350,y:978,w:110,h:80},{x:120,y:1120,w:190,h:86},{x:241,y:940,w:127,h:108},...cabins.map(c=>({x:c.x-16,y:c.y-14,w:c.w+34,h:c.h+35}))];
+const sceneryClearances=[{x:620,y:770,w:100,h:186},{x:580,y:839,w:48,h:62},{x:250,y:600,w:128,h:82},{x:304,y:515,w:72,h:67},{x:350,y:978,w:110,h:80},{x:120,y:1120,w:190,h:86},{x:241,y:940,w:127,h:108},...cabins.map(c=>({x:c.x-16,y:c.y-14,w:c.w+34,h:c.h+35}))];
 const overlaps=(a,b)=>a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y;
 function canopyBounds(t){return{x:t.x-31,y:t.y-t.h-3,w:62,h:t.h+13};}
-const trees=[],rocks=[],props=[],specks=[];
+const trees=[],rocks=[],specks=[];
 let seed=74;function rnd(){seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;}
 const terrain=document.createElement('canvas');terrain.width=MAP_W;terrain.height=MAP_H;const ground=terrain.getContext('2d');
 function nearPath(x,y,margin=35){return [paths,...branches].some(route=>route.some((p,i)=>{if(!i)return false;const a=route[i-1],dx=p.x-a.x,dy=p.y-a.y,k=clamp(((x-a.x)*dx+(y-a.y)*dy)/(dx*dx+dy*dy),0,1);return Math.hypot(x-a.x-dx*k,y-a.y-dy*k)<margin;}));}
@@ -44,23 +44,26 @@ function generateWorld(){
 }
 generateWorld();
 const blockers=cabins.map(c=>({x:c.x-3,y:c.y+5,w:c.w+6,h:c.h-1}));blockers.push({x:gateway.x-gateway.w/2-2,y:gateway.y-5,w:7,h:9},{x:gateway.x+gateway.w/2-4,y:gateway.y-5,w:7,h:9},{x:positions.sign.x-3,y:positions.sign.y-4,w:6,h:8},{x:fire.x-16,y:fire.y-10,w:32,h:20},{x:636,y:793,w:84,h:145});
-let state='menu',gameTime=0,introTime=0,phase=0,paused=false,player,enemy,enemies=[],camera={x:180,y:545};
-let torch=false,hasTorch=false,hidden=false,hideTime=0,near=null,dialogueLines=[],dialogueNext=null,subtitleTimer=0,transition=0;
+let state='menu',gameTime=0,introTime=0,paused=false,player,enemy,enemies=[],camera={x:180,y:545};
+let torch=false,hasTorch=false,hidden=false,near=null,dialogueLines=[],dialogueNext=null,subtitleTimer=0,transition=0;
 let keys={},move={x:0,y:0},stickPointer=null,soundEnabled=false,lastStep=0,lastCrackle=0,lastPop=-1,flash=0;
 let pursuit=false,pursuitTime=0,sprintLocked=false,lastEnemyStep=0;
-let elapsed=0,stamina=6,sprinting=false,grace=0,caughtTime=0,catches=0,outroTime=0,escapeTime=0,nextEvent=20,eventCount=0,eventGhost=null,phoneOwner=null,runSeed=1;
-const phones=[{id:'martha',name:'Martha',x:510,y:411,color:'#e5a0bf',collected:false},{id:'liam',name:'Liam',x:294,y:498,color:'#8bb7ea',collected:false},{id:'willow',name:'Willow',x:591,y:592,color:'#c6a9e9',collected:false}];
+let stamina=6,sprinting=false,grace=0,caughtTime=0,outroTime=0,nextEvent=20,eventGhost=null,runSeed=1;
+let room=null,outsidePosition=null,search=null,outcome=null,runStartedAt=null,runEndedAt=null;
+const phones=[{id:'martha',name:'Martha',x:214,y:143,place:'03',label:'Martha’s bedside table',color:'#e5a0bf',collected:false},{id:'liam',name:'Liam',x:331,y:662,place:'outside',label:'the laundry hamper',color:'#8bb7ea',collected:false},{id:'willow',name:'Willow',x:610,y:870,place:'outside',label:'Willow’s bag',color:'#c6a9e9',collected:false}];
 const busDoor={x:192,y:1135};
-const npcs=[{x:414,y:912,c:'#a1aa78',name:'CAMP LEADER',lines:['Missing? We prefer the word disconnected.','Everyone finds themselves here. Eventually.']},{x:303,y:937,c:'#a78b72',name:'NIGHT PORTER',lines:['Martha took the north trail. Liam was near the washing line. Willow went towards the lake.','Find their phones. Take them as evidence. The minibus keys are in the ignition.']},{x:334,y:558,c:'#8d9c97',name:'JUNE',lines:['Liam was messaging someone called Olivia. He kept laughing at his screen.','Then a man with no shoes came out of the woods. I stopped laughing.','They just stand there, watching. Find the phones and get out before they decide to move.']}];
+const npcs=[{x:414,y:912,c:'#a1aa78',name:'CAMP LEADER',lines:['Missing? We prefer the word disconnected.','Everyone finds themselves here. Eventually.']},{x:303,y:937,c:'#a78b72',name:'NIGHT PORTER',lines:['Martha went back to cabin 03. Liam left something in the laundry hamper. Willow took her bag to the lake.','Find their phones. Take them as evidence. The minibus keys are in the ignition.']},{x:334,y:558,c:'#8d9c97',name:'JUNE',lines:['Liam was messaging someone called Olivia. He kept laughing at his screen.','Then a man with no shoes came out of the woods. I stopped laughing.','They follow light and footsteps. Keep the torch off near them. Hide until they pass.']}];
 function collectedCount(){return phones.filter(p=>p.collected).length;}
-function goalTarget(){return !hasTorch?{...positions.cabin,name:'CABIN 03'}:phones.find(p=>!p.collected)||{...busDoor,name:'MINIBUS'};}
+function goalTarget(){return !phones[0].collected?{...positions.cabin,name:'CABIN 03'}:phones.find(p=>!p.collected)||{...busDoor,name:'MINIBUS'};}
+function worldPlayer(){return room?outsidePosition:player;}
+function runSeconds(){return runStartedAt===null?0:Math.max(0,((runEndedAt??Date.now())-runStartedAt)/1000);}
 function eventRandom(){runSeed=(runSeed*1664525+1013904223)>>>0;return runSeed/4294967296;}
 function resetWorld(){
  window.CampAudio?.silence();pursuit=false;pursuitTime=0;sprintLocked=false;lastEnemyStep=0;
  player={x:277,y:1090,face:'up',walk:0,phone:false};
- enemies=[{x:595,y:360,home:{x:595,y:360},patrol:[{x:595,y:360},{x:619,y:390},{x:597,y:425}],color:'#30473a'},{x:290,y:536,home:{x:290,y:536},patrol:[{x:290,y:536},{x:300,y:570},{x:292,y:610}],color:'#4a4039'}].map(e=>({...e,mode:'lurk',last:{...e.home},time:0,active:true,route:[],replan:0,waypoint:0,face:'down'}));enemy=enemies[0];
- phones.forEach(p=>p.collected=false);phase=0;gameTime=0;torch=false;hasTorch=false;hidden=false;hideTime=0;paused=false;keys={};move={x:0,y:0};near=null;flash=0;subtitleTimer=0;dialogueLines=[];dialogueNext=null;elapsed=0;stamina=6;grace=0;catches=0;caughtTime=0;outroTime=0;escapeTime=0;nextEvent=18+Math.random()*7;eventCount=0;eventGhost=null;phoneOwner=null;runSeed=Date.now()>>>0;lastStep=0;ui.caption.textContent='';resetStick();window.SugarSmush.reset();window.CampPhones?.reset();
- [ui.end,ui.pause,ui.dialogue,$('hide-note'),$('danger')].forEach(e=>e.classList.add('hidden'));$('pause').textContent='Ⅱ';updateHUD();
+ enemies=[{x:595,y:360,home:{x:595,y:360},patrol:[{x:595,y:360},{x:586,y:635},{x:586,y:779},{x:510,y:411}],color:'#30473a'},{x:303,y:620,home:{x:303,y:620},patrol:[{x:303,y:620},{x:303,y:937},{x:360,y:846},{x:294,y:498}],color:'#4a4039'}].map(e=>({...e,mode:'patrol',last:{...e.home},time:0,active:true,route:[],replan:0,waypoint:0,face:'down'}));enemy=enemies[0];
+ phones.forEach(p=>p.collected=false);gameTime=0;torch=false;hasTorch=false;hidden=false;paused=false;keys={};move={x:0,y:0};near=null;flash=0;subtitleTimer=0;dialogueLines=[];dialogueNext=null;stamina=6;grace=5;room=null;outsidePosition=null;search=null;outcome=null;runStartedAt=null;runEndedAt=null;caughtTime=0;outroTime=0;nextEvent=18+Math.random()*7;eventGhost=null;runSeed=Date.now()>>>0;lastStep=0;ui.caption.textContent='';resetStick();window.SugarSmush.reset();window.CampPhones?.reset();
+ [ui.end,ui.pause,ui.dialogue,$('hide-note'),$('danger'),$('search-progress')].forEach(e=>e.classList.add('hidden'));$('pause').textContent='Ⅱ';updateHUD();
 }
 // Cached navigation keeps woodland patrols moving around cabins and tree trunks.
 const NAV_STEP=10,NAV_W=Math.floor(MAP_W/NAV_STEP),NAV_H=Math.floor(MAP_H/NAV_STEP),nav=new Uint8Array(NAV_W*NAV_H);
@@ -70,9 +73,9 @@ function planRoute(from,to){const start=nearestNav(from),end=nearestNav(to);if(s
  while(head<tail){const i=queue[head++];if(i===end)break;const x=i%NAV_W,y=Math.floor(i/NAV_W);for(const j of [x>0?i-1:-1,x<NAV_W-1?i+1:-1,y>0?i-NAV_W:-1,y<NAV_H-1?i+NAV_W:-1])if(j>=0&&nav[j]&&parent[j]===-1){parent[j]=i;queue[tail++]=j;}}
  if(parent[end]===-1)return [];const route=[];for(let i=end;i!==start;i=parent[i])route.push({x:(i%NAV_W)*NAV_STEP+5,y:Math.floor(i/NAV_W)*NAV_STEP+5});return route.reverse();
 }
-function steerEnemy(target,dt,e=enemy){e.replan-=dt;if(e.replan<=0){e.route=planRoute(e,target);e.replan=pursuit?.35:.8;}
+function steerEnemy(target,dt,e=enemy,speed=window.CampHunt.speed(collectedCount(),e.mode==='chase')){e.replan-=dt;if(e.replan<=0){e.route=planRoute(e,target);e.replan=pursuit?.35:.8;}
  while(e.route.length&&dist(e,e.route[0])<5)e.route.shift();for(let i=Math.min(10,e.route.length-1);i>0;i--)if(lineOfSight(e,e.route[i])){e.route.splice(0,i);break;}
- const next=e.route[0]||target,dx=next.x-e.x,dy=next.y-e.y,d=Math.hypot(dx,dy);if(d>2){const speed=pursuit?38:10,step=Math.min(d,speed*dt);moveBody(e,dx/d*step,dy/d*step);e.face=Math.abs(dx)>Math.abs(dy)?dx>0?'right':'left':dy>0?'down':'up';}}
+ const next=e.route[0]||target,dx=next.x-e.x,dy=next.y-e.y,d=Math.hypot(dx,dy);if(d>2){const step=Math.min(d,speed*dt);moveBody(e,dx/d*step,dy/d*step);e.face=Math.abs(dx)>Math.abs(dy)?dx>0?'right':'left':dy>0?'down':'up';}}
 function lineOfSight(a,b){const d=dist(a,b),steps=Math.ceil(d/12);for(let i=1;i<steps;i++)if(blocked(lerp(a.x,b.x,i/steps),lerp(a.y,b.y,i/steps)))return false;return true;}
 function tone(freq,duration,volume=.025,type='sine',slide=0){if(soundEnabled)window.CampAudio?.tone(freq,duration,volume,type,slide);}
 function hiss(duration=.12,volume=.035,freq=1100){if(soundEnabled)window.CampAudio?.hiss(duration,volume,freq);}
@@ -80,76 +83,103 @@ function soundFX(kind,amount=1,pan=0){if(soundEnabled)window.CampAudio?.fx(kind,
 function setSound(enabled){soundEnabled=window.CampAudio?.enable(enabled)||false;$('sound').textContent=soundEnabled?'SOUND ON':'SOUND OFF';$('sound').setAttribute('aria-label',soundEnabled?'Mute sound':'Enable sound');$('audio-opt').checked=soundEnabled;}
 function say(text,seconds=4){ui.caption.textContent=text;subtitleTimer=seconds;}
 function start(withIntro=true){
-  resetWorld();ui.cover.classList.add('hidden');setSound($('audio-opt').checked);canvas.focus();
+  resetWorld();runStartedAt=Date.now();ui.cover.classList.add('hidden');setSound($('audio-opt').checked);canvas.focus();
   if(withIntro){state='intro';introTime=0;lastPop=-1;ui.skip.classList.remove('hidden');ui.hud.classList.add('hidden');ui.touch.classList.add('hidden');}
   else enterPlay();
 }
 function enterPlay(){state='play';introTime=30;ui.skip.classList.add('hidden');ui.hud.classList.remove('hidden');ui.touch.classList.remove('hidden');camera.x=clamp(player.x-W/2,0,MAP_W-W);camera.y=clamp(player.y-H*.57,0,MAP_H-H);say('Martha, Liam and Willow are missing. Find their phones. Then get out.',6);updateHUD();}
 function openDialogue(who,lines,next=null){
- if(state!=='play')return;state='dialogue';keys={};resetStick();dialogueLines=[...lines];dialogueNext=next;$('speaker').textContent=who;ui.dialogue.classList.remove('hidden');advanceDialogue();$('continue').focus();
+ cancelSearch();if(state!=='play')return;state='dialogue';keys={};resetStick();dialogueLines=[...lines];dialogueNext=next;$('speaker').textContent=who;ui.dialogue.classList.remove('hidden');advanceDialogue();$('continue').focus();
 }
 function advanceDialogue(){
  if(dialogueLines.length){$('line').textContent=dialogueLines.shift();tone(240,.055,.01,'triangle');}
  else{ui.dialogue.classList.add('hidden');state='play';const cb=dialogueNext;dialogueNext=null;if(cb)cb();canvas.focus();}
 }
 function updateHUD(){
- const count=collectedCount();phase=!hasTorch?0:count===3?2:1;
- $('objective').textContent=pursuit?'RUN. Get to the minibus.':!hasTorch?'Take the torch from cabin 03.':count===3?'All three phones. Get to the minibus.':`Find the missing campers’ phones. ${count} / 3`;
- $('torch-status').textContent=pursuit?'THREE PHONES SECURED · DON’T STOP':hasTorch?(torch?'TORCH ON · LIGHT THE TRAIL':'TORCH OFF · LISTEN TO THE WOODS'):'THREE PHONES. ONE WAY OUT.';
- for(const p of phones){const b=$('inv-'+p.id);b.disabled=!p.collected||pursuit;b.classList.toggle('collected',p.collected);b.setAttribute('aria-label',p.collected?`Open ${p.name}’s phone`:`${p.name}’s phone — not found`);b.title=p.collected?`Open ${p.name}’s phone`:`Find ${p.name}’s phone`;}
+ const count=collectedCount();$('viewport').classList.toggle('inside-cabin',!!room);
+ $('location-label').textContent=room?'CABIN '+room.n+' • 22:14':'CAMP • 22:14';
+ $('objective').textContent=pursuit?(room?'Leave the cabin. Run to the minibus.':'RUN. Get to the minibus.'):
+  !hasTorch?(room?.n==='03'?'Take the torch from the dresser.':'Enter cabin 03. Find the torch.'):
+  !phones[0].collected?'Search Martha’s bedside table in cabin 03.':`Search the laundry and the lakeside bag. ${count} / 3`;
+ $('torch-status').textContent=pursuit?'THREE PHONES SECURED · DON’T STOP':hasTorch?(torch?'TORCH ON · THEY CAN SEE YOU':'TORCH OFF · STAY QUIET'):'BEWARE THE PEOPLE IN THE WOODS.';
+ for(const p of phones){const b=$('inv-'+p.id);b.disabled=!p.collected||pursuit;b.classList.toggle('collected',p.collected);b.setAttribute('aria-label',p.collected?`Open ${p.name}’s phone`:`${p.name}’s phone — not found`);}
  $('phone-count').textContent=count+' / 3';$('torch').style.opacity=hasTorch?'1':'.45';$('torch').textContent=torch?'OFF':'TORCH';
- $('action').textContent=hidden?'LEAVE':near?.kind==='phone'?'PICK UP':near?.kind==='bus'?(count===3?'DRIVE':'BUS'):near?.kind==='cabin'&&hasTorch||near?.kind==='bush'?'HIDE':'ACT';
+ const labels={search:'SEARCH',torch:'TAKE',door:'LEAVE',cabin:'ENTER',bush:'HIDE',leave:'LEAVE',bus:'BUS',note:'READ',bunk:'HIDE'};
+ $('action').textContent=search?'SEARCHING':hidden?'LEAVE':labels[near?.kind]||'ACT';
  $('run-label').textContent=pursuit?'RUN!':'RUN';$('run').classList.toggle('running',sprinting);$('stamina-fill').style.width=(stamina/(pursuit?10:6)*100)+'%';
 }
+function cabinDoor(c){return{x:c.x+c.w/2,y:c.y+c.h+14};}
+function enterCabin(c){
+ if(state!=='play'||pursuit)return false;cancelSearch();outsidePosition=cabinDoor(c);room=c;hidden=false;torch=false;player.x=180;player.y=344;keys={};resetStick();soundFX('door',.45);
+ say(c.n==='03'?'Empty bunks. A torch in the dresser. Something buzzing by Martha’s bed.':'The cabin is empty. Search the note on the back wall.',5);updateHUD();return true;
+}
+function leaveCabin(){
+ if(!room)return false;cancelSearch();player.x=outsidePosition.x;player.y=outsidePosition.y;room=null;outsidePosition=null;hidden=false;keys={};resetStick();grace=Math.max(grace,3);soundFX('door',.4);$('hide-note').classList.add('hidden');updateHUD();return true;
+}
 function findNearby(){
- if(pursuit)return dist(player,busDoor)<30?{kind:'bus',...busDoor,label:'E / ACT — drive out of camp'}:null;
  if(hidden)return{kind:'leave',label:'E / ACT — leave hiding place'};
- const list=[{kind:'cabin',...positions.cabin,label:hasTorch?'E / ACT — hide in cabin 03':'E / ACT — take the torch'},
- {kind:'bus',...busDoor,label:collectedCount()===3?'E / ACT — drive out of camp':'E / ACT — inspect the minibus'},
- {kind:'sign',...positions.sign,label:'E / ACT — read camp rules'},{kind:'pile',x:fire.x+43,y:fire.y,label:'E / ACT — inspect the burned phones'},
- ...bushes.map(b=>({...b,kind:'bush',label:'E / ACT — hide in bushes'})),
- ...phones.filter(p=>!p.collected).map(p=>({...p,kind:'phone',label:`E / ACT — pick up ${p.name}’s phone`})),
- ...npcs.map(n=>({...n,kind:'npc',label:'E / ACT — talk to '+n.name}))];
- return list.filter(o=>dist(player,o)<27).sort((a,b)=>(a.kind==='phone'?-100:dist(player,a))-(b.kind==='phone'?-100:dist(player,b)))[0]||null;
+ let list;
+ if(room){const it=window.CampRooms.items;list=[{kind:'door',...it.door,label:'E / ACT — leave cabin'},{kind:'note',...it.note,label:'E / ACT — read the note'},{kind:'bunk',...it.hide,label:'E / ACT — hide under the bunk'}];
+  if(room.n==='03'){if(!hasTorch)list.push({kind:'torch',...it.torch,label:'E / ACT — take the torch'});else if(!phones[0].collected)list.push({...phones[0],kind:'search',label:'E / ACT — search Martha’s bedside table'});}
+ }else if(pursuit){return dist(player,busDoor)<40?{kind:'bus',...busDoor,label:'Keep moving to the bus door — automatic escape'}:null;}
+ else{list=[...cabins.map(c=>({kind:'cabin',...cabinDoor(c),cabin:c,label:'E / ACT — enter cabin '+c.n})),{kind:'bus',...busDoor,label:'E / ACT — inspect the minibus'},
+  {kind:'sign',...positions.sign,label:'E / ACT — read camp rules'},{kind:'pile',x:fire.x+43,y:fire.y,label:'E / ACT — inspect the burned phones'},
+  ...bushes.map(b=>({...b,kind:'bush',label:'E / ACT — hide in bushes'})),...npcs.map(n=>({...n,kind:'npc',label:'E / ACT — talk to '+n.name}))];
+  if(phones[0].collected)list.push(...phones.filter(p=>p.place==='outside'&&!p.collected).map(p=>({...p,kind:'search',label:'E / ACT — search '+p.label})));
+ }
+ return list.filter(o=>dist(player,o)<29).sort((a,b)=>dist(player,a)-dist(player,b))[0]||null;
 }
+function cancelSearch(){search=null;$('search-progress').classList.add('hidden');}
+function beginSearch(id){if(search||state!=='play')return;const p=phones.find(p=>p.id===id);if(!p||p.collected)return;search={id,time:0,origin:{x:player.x,y:player.y}};soundFX('pickup',.4);$('search-progress').classList.remove('hidden');$('search-label').textContent='SEARCHING '+p.label.toUpperCase();$('search-fill').style.width='0%';say('Keep still to search. Move to cancel.',2);}
+function updateSearch(dt){if(!search)return;if(dist(player,search.origin)>3){cancelSearch();return;}search.time+=dt;$('search-fill').style.width=Math.min(100,search.time/2*100)+'%';if(search.time>=2){const id=search.id;cancelSearch();pickupPhone(id);}}
 function interact(){
- if(paused)return;if(state==='dialogue'){advanceDialogue();return;}if(state!=='play')return;near=findNearby();if(!near)return;if(pursuit&&near.kind!=='bus'){say('They saw you. No time to stop. Run for the minibus.',3);return;}
- if(near.kind==='leave'){hidden=false;hideTime=0;$('hide-note').classList.add('hidden');grace=Math.max(grace,1);updateHUD();return;}
- if(near.kind==='cabin'){
-  if(!hasTorch)openDialogue('CABIN 03',['Martha’s bunk. Liam’s jacket. Willow’s make-up bag. Nobody here.','A torch is lying by the door. Somewhere on the north trail, a phone vibrates.'],()=>{hasTorch=true;torch=true;flash=.45;tone(680,.9,.05,'sawtooth',-570);say('Martha went north. Liam was by the washing line. Willow went towards the lake.',6);updateHUD();});
-  else hide('Under the bunk. Wait for the footsteps to pass.');
- }else if(near.kind==='bus'){
-  if(collectedCount()===3)beginEscape();else openDialogue('THE MINIBUS',['Keys in the ignition. The driver is gone.','Martha. Liam. Willow. You need their phones — something to show what happened here.']);
- }else if(near.kind==='sign')openDialogue('THE CAMP RULES',['1. Be present. 2. Be kind. 3. Surrender your phone.','4. No wandering after lights out. 5. Trust the process.','There is no rule six. Someone has scratched it off.']);
- else if(near.kind==='pile')openDialogue('THE FIRE',['Blackened glass. Melted cases. A tiny blue light still blinking.','Someone has thrown an entire charging cable in after them.']);
+ if(paused)return;if(state==='dialogue'){advanceDialogue();return;}if(state!=='play')return;near=findNearby();if(!near)return;
+ if(near.kind==='leave'){hidden=false;$('hide-note').classList.add('hidden');grace=Math.max(grace,1);updateHUD();return;}
+ if(near.kind==='door'){leaveCabin();return;}
+ if(pursuit)return;
+ if(near.kind==='cabin')enterCabin(near.cabin);
+ else if(near.kind==='torch'){hasTorch=true;torch=true;soundFX('torch');say('Torch secured. Search the little table beside Martha’s bunk.',5);updateHUD();}
+ else if(near.kind==='search')beginSearch(near.id);
+ else if(near.kind==='note')openDialogue('CABIN '+room.n,window.CampRooms.notes[room.n]);
+ else if(near.kind==='bus')openDialogue('THE MINIBUS',['Keys in the ignition. The driver is gone.','Find the three phones. Get to this door and you will leave automatically.']);
+ else if(near.kind==='sign')openDialogue('THE CAMP RULES',['Be present. Be kind. Surrender your phone.','No wandering after lights out. Trust the process.']);
+ else if(near.kind==='pile')openDialogue('THE FIRE',['Blackened glass. Melted cases. A tiny blue light still blinking.']);
  else if(near.kind==='npc')openDialogue(near.name,near.lines);
- else if(near.kind==='bush')hide('Keep still. Let them pass. E / ACT to leave.');
- else if(near.kind==='phone')pickupPhone(near.id);
+ else if(near.kind==='bush'||near.kind==='bunk')hide('Keep still. Torch off. E / ACT to leave.');
 }
-function hide(message){if(pursuit){say('They saw you. Run for the minibus.',3);return;}hidden=true;torch=false;hideTime=0;$('hide-note').classList.remove('hidden');say(message,4);updateHUD();}
+function hide(message){cancelSearch();if(pursuit){say('They saw you. Run for the minibus.',3);return;}hidden=true;torch=false;$('hide-note').classList.remove('hidden');say(message,4);updateHUD();}
 function toggleTorch(){if(state!=='play'||paused)return;if(!hasTorch){say('There’s a torch in cabin 03.',2);return;}torch=!torch;soundFX('torch');if(hidden&&torch)say('The light gives you away. Turn it off.',3);updateHUD();}
 function blocked(x,y){
  if(x<28||x>MAP_W-28||y<30||y>MAP_H-35)return true;
  if(blockers.some(b=>x>b.x-5&&x<b.x+b.w+5&&y>b.y-3&&y<b.y+b.h+4))return true;
  return trees.some(t=>Math.hypot(x-t.x,y-t.y)<7);
 }
-function moveBody(body,dx,dy){if(!blocked(body.x+dx,body.y))body.x+=dx;if(!blocked(body.x,body.y+dy))body.y+=dy;}
-function caught(){state='caught';caughtTime=0;catches++;hidden=false;torch=false;keys={};resetStick();ui.touch.classList.add('hidden');$('hide-note').classList.add('hidden');say('A hand on your shoulder. You break free. RUN.',4);flash=.65;soundFX('caught');}
-function startPursuit(reposition=true){
- if(collectedCount()!==3)return false;
- pursuit=true;pursuitTime=0;hidden=false;torch=false;stamina=10;sprintLocked=false;grace=5;eventGhost=null;const route=planRoute(player,busDoor),lastPhone=phones.find(p=>dist(player,p)<45),next=lastPhone?(lastPhone.id==='liam'?branches[1][1]:lastPhone.id==='willow'?branches[2][0]:paths[8]):route[Math.min(12,route.length-1)]||busDoor,angle=Math.atan2(next.y-player.y,next.x-player.x)+Math.PI;
- enemies.forEach((e,i)=>{if(reposition){const a=angle+(i?-.28:.28),radius=i?185:145,desired={x:clamp(player.x+Math.cos(a)*radius,32,MAP_W-32),y:clamp(player.y+Math.sin(a)*radius,35,MAP_H-40)},n=nearestNav(desired);if(n>=0){const q={x:(n%NAV_W)*NAV_STEP+5,y:Math.floor(n/NAV_W)*NAV_STEP+5};if(dist(q,player)>65&&planRoute(q,player).length){e.x=q.x;e.y=q.y;}}}Object.assign(e,{active:true,mode:'chase',last:{x:player.x,y:player.y},time:0,replan:0,route:[]});});
- $('hide-note').classList.add('hidden');say('They’re coming. Hold RUN / Shift. Get to the minibus.',5);soundFX('chase');updateHUD();
+function moveBody(body,dx,dy){const collision=body===player&&room?window.CampRooms.blocked:blocked;if(!collision(body.x+dx,body.y))body.x+=dx;if(!collision(body.x,body.y+dy))body.y+=dy;}
+function caught(){state='caught';caughtTime=0;outcome='caught';cancelSearch();hidden=false;torch=false;keys={};resetStick();ui.touch.classList.add('hidden');ui.hud.classList.add('hidden');$('hide-note').classList.add('hidden');say('No last chance. No signal. No way out.',3);flash=.65;soundFX('caught');}
+function startPursuit(){
+ if(collectedCount()!==3)return false;pursuit=true;pursuitTime=0;hidden=false;torch=false;stamina=10;sprintLocked=false;grace=5;eventGhost=null;
+ const origin=worldPlayer(),lastPhone=room?null:phones.find(p=>p.place==='outside'&&dist(player,p)<45),route=planRoute(origin,busDoor),next=lastPhone?.id==='liam'?branches[3][1]:lastPhone?.id==='willow'?branches[2][1]:route[Math.min(12,route.length-1)]||busDoor,angle=Math.atan2(next.y-origin.y,next.x-origin.x)+Math.PI;
+ const placed=[];enemies.forEach((e,i)=>{const radius=i?185:145,desired={x:origin.x+Math.cos(angle)*radius,y:origin.y+Math.sin(angle)*radius};let best=null,score=Infinity;
+  for(let n=0;n<nav.length;n++){if(!nav[n])continue;const q={x:(n%NAV_W)*NAV_STEP+5,y:Math.floor(n/NAV_W)*NAV_STEP+5},d=dist(q,origin);if(d<115||d>240||((q.x-origin.x)*Math.cos(angle)+(q.y-origin.y)*Math.sin(angle))/d<.2||placed.some(p=>dist(q,p)<28))continue;const cost=dist(q,desired);if(cost<score){score=cost;best=q;}}
+  if(best&&planRoute(best,origin).length){e.x=best.x;e.y=best.y;placed.push(best);}
+  Object.assign(e,{active:true,mode:'chase',last:{...origin},time:0,replan:0,route:[]});});
+ $('hide-note').classList.add('hidden');say(room?'Three phones. Leave the cabin and RUN to the minibus.':'They’re coming. Hold RUN / Shift. Reach the minibus door.',5);soundFX('chase');updateHUD();return true;
 }
-function recover(){state='play';player.x=positions.cabin.x;player.y=positions.cabin.y;grace=8;stamina=6;sprintLocked=false;enemies.forEach(e=>{Object.assign(e,{x:e.home.x,y:e.home.y,mode:'lurk',time:0,replan:0,route:[]});});ui.touch.classList.remove('hidden');if(pursuit){startPursuit();say('You break free at cabin 03. The phones are safe. RUN for the bus.',5);}else say('Back at cabin 03. You still have the phones. Keep moving.',5);updateHUD();}
 function beginEscape(){
- if(collectedCount()!==3)return false;escapeTime=elapsed;state='outro';outroTime=0;keys={};resetStick();hidden=false;torch=false;player.phone=false;ui.hud.classList.add('hidden');ui.touch.classList.add('hidden');$('hide-note').classList.add('hidden');say('You slam the door. Turn the key. Don’t look back.',4);soundFX('door');soundFX('engine');return true;
+ if(room||collectedCount()!==3||state!=='play')return false;outcome='escaped';state='outro';outroTime=0;cancelSearch();keys={};resetStick();hidden=false;torch=false;player.phone=false;ui.hud.classList.add('hidden');ui.touch.classList.add('hidden');$('hide-note').classList.add('hidden');say('You slam the door. Turn the key. Don’t look back.',4);soundFX('door');soundFX('engine');return true;
 }
-function formatTime(t){return Math.floor(t/60)+':'+String(Math.floor(t%60)).padStart(2,'0');}
-function finish(){state='end';ui.caption.textContent='';ui.end.classList.remove('hidden');$('end-label').textContent='DOOM SCROLL';$('end-title').textContent='YOU GOT OUT.';$('end-text').textContent=`3 phones recovered · ${formatTime(escapeTime)} · ${catches===0?'Never caught':catches+' close call'+(catches===1?'':'s')}\nBut someone was watching.`;$('retry').focus();tone(110,1.5,.03,'triangle');}
-function togglePause(){if(['menu','end','phone','outro','cctv'].includes(state))return;paused=!paused;ui.pause.classList.toggle('hidden',!paused);keys={};resetStick();$('pause').textContent=paused?'▶':'Ⅱ';if(!paused)canvas.focus();}
+function formatTime(t){return String(Math.floor(t/60)).padStart(2,'0')+':'+String(Math.floor(t%60)).padStart(2,'0');}
+function finish(result='escaped'){
+ outcome=result;state='end';runEndedAt=Date.now();ui.caption.textContent='';ui.end.classList.remove('hidden');ui.hud.classList.add('hidden');ui.touch.classList.add('hidden');
+ $('end-label').textContent='DOOM SCROLL';$('end-title').textContent=result==='escaped'?'YOU GOT OUT.':'CAUGHT.';
+ $('end-text').textContent=result==='escaped'?`3 phones recovered.
+But someone was watching.`:`${collectedCount()} / 3 phones recovered.
+The camp keeps what it catches.`;
+ $('wasted-time').textContent=formatTime(runSeconds());$('retry').focus();tone(110,1.5,.03,'triangle');
+}
+function togglePause(){if(['menu','end','phone','outro','cctv','caught'].includes(state))return;paused=!paused;cancelSearch();ui.pause.classList.toggle('hidden',!paused);keys={};resetStick();$('pause').textContent=paused?'▶':'Ⅱ';if(!paused)canvas.focus();}
 function randomEvent(){
- eventCount++;const n=Math.floor(eventRandom()*5);
+ const n=Math.floor(eventRandom()*5);
  if(n===0){say('A phone rings in your pocket. There is no signal.',5);soundFX('notification',.6);}
  if(n===1){say('Something moves between the trees. Then it stops.',5);eventGhost={x:clamp(player.x+(eventRandom()>.5?95:-95),35,MAP_W-35),y:clamp(player.y-92,45,MAP_H-45),ttl:4};hiss(.55,.025,450);}
  if(n===2){say('A voice in the woods: “Your friends are waiting.”',5);tone(72,1.1,.025,'triangle');}
@@ -158,13 +188,12 @@ function randomEvent(){
  nextEvent=gameTime+22+eventRandom()*15;
 }
 function update(dt){
- if(!paused&&['intro','play','dialogue','phone','caught'].includes(state))elapsed+=dt;
- window.CampAudio?.update(dt,paused?'quiet':pursuit&&state==='play'?'chase':state==='phone'?'phone':['cctv','end'].includes(state)?'cctv':'quiet',paused);
+ window.CampAudio?.update(dt,paused?'quiet':state==='play'&&(pursuit||enemies.some(e=>e.mode==='chase'))?'chase':state==='phone'?'phone':['cctv','end'].includes(state)?'cctv':'quiet',paused);
  transition+=dt;flash=Math.max(0,flash-dt);if(paused||state==='phone')return;
  if(subtitleTimer>0){subtitleTimer-=dt;if(subtitleTimer<=0)ui.caption.textContent='';}
  if(state==='outro'){outroTime+=dt;for(const e of enemies)if(e.active)steerEnemy({x:270,y:1135},dt,e);camera.x=lerp(camera.x,0,Math.min(1,dt*3));camera.y=lerp(camera.y,MAP_H-H,Math.min(1,dt*3));if(outroTime>6){state='cctv';outroTime=0;ui.caption.textContent='';soundFX('static');}return;}
  if(state==='cctv'){outroTime+=dt;if(outroTime>8)finish();return;}
- if(state==='caught'){caughtTime+=dt;if(caughtTime>3.5)recover();return;}
+ if(state==='caught'){caughtTime+=dt;if(caughtTime>2)finish('caught');return;}
  if(state==='intro'){
   introTime+=dt;ui.caption.textContent=introTime<2?'':introTime<5?'DISCONNECT.':introTime<8?'RECONNECT.':introTime<11?'BE PRESENT. BE FREE.':introTime<14?'[ A notification chimes from the fire. ]':introTime<18?'[ Bus brakes hiss. The chanting stops. ]':introTime<23?'“Welcome to camp.”':'';
   if(introTime<14){camera.x=fire.x-W/2;camera.y=clamp(fire.y-H*.49,0,MAP_H-H);const p=Math.floor(introTime/3);if(p!==lastPop){lastPop=p;hiss(.22,.07,2400);tone(70,1.6,.025,'triangle');tone(106,1.5,.012,'sine');}if(introTime>11&&introTime<11+dt){tone(880,.2,.045);tone(1174,.3,.03);}}
@@ -172,40 +201,37 @@ function update(dt){
   if(introTime>=27)enterPlay();
  }
  if(state==='menu'){camera.x=fire.x-W/2;camera.y=clamp(fire.y-H*.47,0,MAP_H-H);}
- if(state==='play'){
-  gameTime+=dt;if(pursuit)pursuitTime+=dt;grace=Math.max(0,grace-dt);if(eventGhost){eventGhost.ttl-=dt;if(eventGhost.ttl<=0)eventGhost=null;}
-  let dx=move.x+(keys.ArrowRight||keys.d?1:0)-(keys.ArrowLeft||keys.a?1:0),dy=move.y+(keys.ArrowDown||keys.s?1:0)-(keys.ArrowUp||keys.w?1:0),len=Math.hypot(dx,dy);
-  if(len>1){dx/=len;dy/=len;}if(hidden){dx=0;dy=0;hideTime+=dt;}
-  if(stamina<=.05)sprintLocked=true;if(stamina>1.4||!keys.Shift)sprintLocked=false;sprinting=!!(keys.Shift&&!sprintLocked&&stamina>.05&&(dx||dy));stamina=pursuit?10:clamp(stamina+(sprinting?-dt:dt*.8),0,6);
-  const speed=sprinting?98:64;moveBody(player,dx*speed*dt,dy*speed*dt);
-  if(dx||dy){player.walk+=dt*8;player.face=Math.abs(dx)>Math.abs(dy)?dx>0?'right':'left':dy>0?'down':'up';if(gameTime-lastStep>(sprinting?.23:.4)){lastStep=gameTime;soundFX('step',sprinting?.9:.6,Math.sin(player.walk)*.13);}}
-  camera.x=lerp(camera.x,clamp(player.x-W/2,0,MAP_W-W),Math.min(1,dt*7));camera.y=lerp(camera.y,clamp(player.y-H*.57,0,MAP_H-H),Math.min(1,dt*7));
-  near=findNearby();$('nearby').textContent=near?near.label:'';updateHUD();
-  if(!pursuit&&gameTime>=nextEvent&&hasTorch&&!hidden)randomEvent();
-  let threatened=false;
-  for(const e of enemies){if(!e.active)continue;e.time+=dt;
-   if(!pursuit){e.mode='lurk';const target=e.patrol[e.waypoint];if(dist(e,target)<16)e.waypoint=(e.waypoint+1)%e.patrol.length;steerEnemy(target,dt,e);continue;}
-   e.mode='chase';e.last={x:player.x,y:player.y};e.time=0;
-   // Give players time to put the phone away and turn towards the exit.
-   if(pursuitTime<3)continue;
-   steerEnemy(player,dt,e);if(dist(player,e)<180)threatened=true;
-   if(grace<=0&&dist(player,e)<12){caught();return;}
-  }
-  $('danger').classList.toggle('hidden',!threatened);$('danger').textContent=threatened?(pursuit?'THEY’RE FOLLOWING · GET TO THE BUS':''):'';
-  if(threatened&&gameTime-lastEnemyStep>.4){lastEnemyStep=gameTime;const e=enemies.filter(e=>e.active).sort((a,b)=>dist(a,player)-dist(b,player))[0];soundFX('step',clamp(1-dist(e,player)/220,.1,.65),clamp((e.x-player.x)/120,-.8,.8));}
- }
+ if(state==='play')updatePlay(dt);
  if(soundEnabled&&state!=='end'&&state!=='dialogue'&&transition-lastCrackle>.4){lastCrackle=transition;if(state==='intro'||state==='menu'||dist(player,fire)<160)soundFX('fire',.14);}
 }
+function updatePlay(dt){
+ gameTime+=dt;if(pursuit)pursuitTime+=dt;grace=Math.max(0,grace-dt);if(eventGhost){eventGhost.ttl-=dt;if(eventGhost.ttl<=0)eventGhost=null;}
+ let dx=move.x+(keys.ArrowRight||keys.d?1:0)-(keys.ArrowLeft||keys.a?1:0),dy=move.y+(keys.ArrowDown||keys.s?1:0)-(keys.ArrowUp||keys.w?1:0),length=Math.hypot(dx,dy);
+ if(length>1){dx/=length;dy/=length;}if(hidden){dx=0;dy=0;}
+ if(stamina<=.05)sprintLocked=true;if(stamina>1.4||!keys.Shift)sprintLocked=false;sprinting=!!(keys.Shift&&!sprintLocked&&stamina>.05&&(dx||dy));stamina=pursuit?10:clamp(stamina+(sprinting?-dt:dt*.8),0,6);
+ const speed=sprinting?98:64;moveBody(player,dx*speed*dt,dy*speed*dt);
+ if(dx||dy){player.walk+=dt*8;player.face=Math.abs(dx)>Math.abs(dy)?dx>0?'right':'left':dy>0?'down':'up';if(gameTime-lastStep>(sprinting?.23:.4)){lastStep=gameTime;soundFX('step',sprinting?.9:.6,Math.sin(player.walk)*.13);}}
+ if(!room){camera.x=lerp(camera.x,clamp(player.x-W/2,0,MAP_W-W),Math.min(1,dt*7));camera.y=lerp(camera.y,clamp(player.y-H*.57,0,MAP_H-H),Math.min(1,dt*7));}
+ // Boarding takes priority at the door; no button press or last-frame catch.
+ if(!room&&collectedCount()===3&&dist(player,busDoor)<29){beginEscape();return;}
+ near=findNearby();$('nearby').textContent=near?near.label:'';updateHUD();
+ if(!room&&!pursuit&&gameTime>=nextEvent&&hasTorch&&!hidden)randomEvent();
+ const danger=window.CampHunt.update(enemies,dt,{player:worldPlayer(),count:collectedCount(),inside:!!room,hidden,torch,sprinting,grace,pursuit,pursuitTime,lineOfSight,moveEnemy:steerEnemy});
+ if(danger.caught){caught();return;}
+ $('danger').classList.toggle('hidden',!danger.threatened);$('danger').textContent=danger.threatened?(pursuit?'THEY’RE FOLLOWING · REACH THE BUS':'FOOTSTEPS · TORCH OFF / HIDE'):'';
+ if(danger.threatened&&gameTime-lastEnemyStep>.45){lastEnemyStep=gameTime;const e=enemies.filter(e=>e.active).sort((a,b)=>dist(a,worldPlayer())-dist(b,worldPlayer()))[0];soundFX('step',clamp(1-dist(e,worldPlayer())/220,.1,.65),clamp((e.x-worldPlayer().x)/120,-.8,.8));}
+ updateSearch(dt);
+}
 function returnFromPhone(){
- player.phone=false;phoneOwner=null;state='play';ui.hud.classList.remove('hidden');ui.touch.classList.remove('hidden');canvas.focus();grace=Math.max(grace,4);
+ player.phone=false;state='play';ui.hud.classList.remove('hidden');ui.touch.classList.remove('hidden');canvas.focus();grace=Math.max(grace,4);
  const count=collectedCount();
  if(count===3&&!pursuit)startPursuit();
- else say('Phone secured. The figures in the woods are still watching.',5);
+ else say('Phone secured. Check the laundry hamper and the bag beside the lake. Keep quiet.',5);
  updateHUD();
 }
 function openPhone(id){
  const p=phones.find(p=>p.id===id);if(!p||!p.collected||state!=='play'||paused||pursuit)return false;
- state='phone';phoneOwner=id;keys={};resetStick();player.phone=true;ui.hud.classList.add('hidden');ui.touch.classList.add('hidden');ui.caption.textContent='';soundFX('pickup');
+ cancelSearch();state='phone';keys={};resetStick();player.phone=true;ui.hud.classList.add('hidden');ui.touch.classList.add('hidden');ui.caption.textContent='';soundFX('pickup');
  if(id==='martha')window.SugarSmush.open(returnFromPhone);else window.CampPhones.open(id,returnFromPhone);return true;
 }
 function pickupPhone(id='martha'){const p=phones.find(p=>p.id===id);if(!p||p.collected||state!=='play')return false;p.collected=true;updateHUD();openPhone(id);return true;}
@@ -226,7 +252,7 @@ function cabin(c){
  rect(x-8,y+3,w+16,37,'#354c3b');rect(x-2,y-4,w+4,9,'#586b48');rect(x+5,y-8,w-10,5,'#73805a');
  for(let row=0;row<5;row++)for(let xx=0;xx<w+10;xx+=11){const px=x-5+xx+(row%2?5:0),py=y+7+row*6;rect(px,py,9,4,['#496247','#435b40','#536748'][(xx+row)%3]);rect(px,py+4,10,1,'#213d2d');rect(px+1,py,5,1,'#78825b50');}
  rect(x-9,y+38,w+18,5,'#21362a');rect(x-7,y+43,w+14,2,'#a28e5b');rect(x+w-27,y+5,11,12,'#676d56');rect(x+w-25,y+3,7,3,'#91927a');rect(x+w-24,y+2,5,1,'#c3b694');rect(x+w-23,y+7,2,6,'#424e3a');
- for(const wx of [x+13,x+w-34]){rect(wx-2,y+h-42,26,28,'#3e4530');rect(wx,y+h-40,22,23,c.n==='03'&&phase>=1?'#857044':'#c3a35e');rect(wx+1,y+h-39,7,20,'#dab87655');rect(wx+10,y+h-40,2,24,'#68573a');rect(wx,y+h-29,22,2,'#645333');rect(wx-3,y+h-15,28,3,'#b09362');rect(wx+3,y+h-42,1,4,'#ece0a173');}
+ for(const wx of [x+13,x+w-34]){rect(wx-2,y+h-42,26,28,'#3e4530');rect(wx,y+h-40,22,23,c.n==='03'&&hasTorch?'#857044':'#c3a35e');rect(wx+1,y+h-39,7,20,'#dab87655');rect(wx+10,y+h-40,2,24,'#68573a');rect(wx,y+h-29,22,2,'#645333');rect(wx-3,y+h-15,28,3,'#b09362');rect(wx+3,y+h-42,1,4,'#ece0a173');}
  const door=x+w/2;rect(door-12,y+h-34,24,34,'#303f2d');rect(door-9,y+h-31,18,29,'#5d5037');rect(door-7,y+h-29,2,26,'#846b43');rect(door+5,y+h-16,2,2,'#e4c97c');rect(door-19,y+h+1,38,5,'#9b8d64');rect(door-22,y+h+6,44,4,'#6d6b47');for(let yy=1;yy<10;yy+=4)rect(door-20,y+h+yy,40,1,'#c0ad7980');
  rect(door-10,y+h-47,21,10,'#344833');pixelText(c.n,door-6,y+h-39,'#e2d3a0',8);
  rect(x+w-3,y+h-40,2,23,'#6c7251');rect(x+w-8,y+h-39,10,12,'#a8a262');rect(x+w-6,y+h-36,6,7,'#ebd389');rect(x+w-8,y+h-40,10,2,'#344b34');
@@ -289,6 +315,8 @@ function laundryLine(){
 }
 function supplyBin(){rect(440,972,33,27,'#48563c');rect(437,970,39,5,'#73805b');rect(442,977,2,18,'#90a27350');rect(439,999,35,2,'#21382a');pixelText('BIN',448,986,'#bdc49e',7);}
 function campBag(){rect(284,975,10,13,'#806b42');rect(284,976,10,2,'#b9a26a');rect(294,984,7,5,'#91846a');rect(286,979,6,5,'#a38b5c');rect(288,973,4,2,'#4b543d');}
+function evidenceProp(p){const x=p.x,y=p.y;if(p.id==='liam'){rect(x-14,y-13,29,18,'#957e57');rect(x-16,y-16,33,5,'#bda374');for(let i=0;i<4;i++)rect(x-12+i*7,y-10,2,13,'#5e5d3e');rect(x-10,y-22,20,7,'#b3c2ac');rect(x-8,y-20,16,2,'#e0d8b1');}
+ else{rect(x-13,y-15,26,18,'#7c6650');rect(x-10,y-21,20,8,'#b89977');rect(x-6,y-24,12,4,'#475740');rect(x-10,y-12,20,1,'#c6a879');rect(x+5,y-11,4,7,'#5c806e');}if(!p.collected&&dist(worldPlayer(),p)<70)glow(x,y-6,21,'#a8c99816');}
 function phoneOnGround(p){const pulse=(Math.sin(transition*3)+1)/2;glow(p.x,p.y-4,34+pulse*10,'#84d7d246');rect(p.x-5,p.y-12,10,15,'#263e3b');rect(p.x-4,p.y-11,8,12,'#92d7d2');rect(p.x-2,p.y-11,4,1,'#38574f');for(let i=0;i<6;i++)rect(p.x-3+(i%2)*3,p.y-8+Math.floor(i/2)*3,2,2,['#ed97c0','#e4c766','#a9cf8d'][i%3]);rect(p.x-1,p.y+1,2,1,'#dbf4e5');}
 // Final shot: a person inside the camp watches the exit camera. The monitor
 // shows the minibus depart; this view stays behind the Instagram end card.
@@ -322,7 +350,8 @@ function drawCCTV(){
  if(state==='cctv'&&outroTime>5.7)pixelText('YOU LEFT. THEY SAW.',W/2-72,sy-37,'#d7d4ac',9);
 }
 function draw(){
- if(state==='cctv'||state==='end'){drawCCTV();return;}
+ if(state==='cctv'||state==='end'&&outcome==='escaped'){drawCCTV();return;}
+ if(room){window.CampRooms.draw(ctx,H,room,player,{hidden,hasTorch,marthaCollected:phones[0].collected,person,phone:phoneOnGround,glow});return;}
  ctx.imageSmoothingEnabled=false;ctx.clearRect(0,0,W,H);ctx.save();ctx.translate(-Math.floor(camera.x),-Math.floor(camera.y));ctx.drawImage(terrain,0,0);
  // Pond edge, reeds and reflected moonlight.
  rect(636,793,84,145,'#223f3a');rect(628,812,8,109,'#3d5137');for(let i=0;i<16;i++){const y=803+i*8;rect(644+(i%4)*7+Math.sin(transition+i)*2,y,16,1,'#5e796244');if(i%3===0){rect(632+(i%2)*5,y,2,8,'#6b7950');rect(631+(i%2)*5,y-1,3,3,'#969465');}}
@@ -335,14 +364,14 @@ function draw(){
   [0,1,2,3,4].forEach(i=>{const a=i*Math.PI*2/5,x=fire.x+Math.cos(a)*52,y=fire.y+Math.sin(a)*33;entities.push({y,draw:()=>{person(x,y,['#b1aa7b','#98a17c','#beb382','#929c78','#a0a980'][i],0,y>fire.y?'up':'down',true);if(i===0&&(state==='menu'||introTime<14)){const t=(state==='menu'?transition:introTime)%3;if(t<1.2){const k=t/1.2;rect(lerp(x,fire.x,k),lerp(y-20,fire.y-8,k)-Math.sin(k*Math.PI)*27,4,7,'#addcd2');}}}});});
  }else{npcs.forEach(n=>entities.push({y:n.y,draw:()=>person(n.x,n.y,n.c,0,'down',n.name==='CAMP LEADER')}));if(!hidden&&state!=='outro')entities.push({y:player.y,draw:()=>person(player.x,player.y,'#c08458',player.walk,player.face,false,player.phone)});enemies.filter(e=>e.active).forEach(e=>entities.push({y:e.y,draw:()=>{pursuer(e,transition*4);}}));if(eventGhost)entities.push({y:eventGhost.y,draw:()=>person(eventGhost.x,eventGhost.y,'#2c382e',0,'down',true)});}
  if(state==='intro'&&introTime>19)for(let i=0;i<5;i++){const k=clamp((introTime-19-i*.85)/5,0,1);if(k>0){const x=lerp(271,287+i*14,k),y=lerp(1193,1040+i*11,k);entities.push({y,draw:()=>person(x,y,['#a4946c','#829c8c','#bc916c','#929e73','#c08458'][i],k*14,'up')});}}
- phones.filter(p=>!p.collected).forEach(p=>entities.push({y:p.y,draw:()=>phoneOnGround(p)}));entities.sort((a,b)=>a.y-b.y).forEach(e=>e.draw());
+ phones.filter(p=>p.place==='outside').forEach(p=>entities.push({y:p.y,draw:()=>evidenceProp(p)}));entities.sort((a,b)=>a.y-b.y).forEach(e=>e.draw());
  if(torch&&hasTorch&&!['menu','intro','phone'].includes(state)){const a={up:-Math.PI/2,down:Math.PI/2,left:Math.PI,right:0}[player.face],px=player.x,py=player.y-13;ctx.save();ctx.beginPath();ctx.moveTo(px,py);ctx.arc(px,py,126,a-.53,a+.53);ctx.closePath();ctx.clip();glow(px,py,136,'#ece2b04b');ctx.restore();rect(px+Math.cos(a)*9,py+Math.sin(a)*9,3,3,'#f3df9d');}
  // Occasional fireflies; subtle movement is disabled for reduced-motion users.
  if(!reduced)specks.forEach(p=>{const a=(Math.sin(transition+p.s)+1)/2;if(a>.8)rect(p.x+Math.sin(transition*.3+p.s)*3,p.y,1,1,'#c2cc884f');});
  ctx.restore();
  const vignette=ctx.createRadialGradient(W/2,H*.5,W*.3,W/2,H*.5,H*.72);vignette.addColorStop(0,'#00000000');vignette.addColorStop(1,'#06170cb3');ctx.fillStyle=vignette;ctx.fillRect(0,0,W,H);
  if(hidden&&state==='play'){ctx.fillStyle='#04140c65';ctx.fillRect(0,0,W,H);pixelText('WAIT. LISTEN. THEN MOVE.',W/2-80,H*.72-9,'#c9d1a5',8);}
- if(state==='caught'){rect(0,0,W,H,'#360c1580');pixelText('KEEP THE PHONES. KEEP MOVING.',W/2-114,H*.48,'#ecd6c1',9);}
+ if(state==='caught'){rect(0,0,W,H,'#360c1580');pixelText('YOUR LAST NOTIFICATION.',W/2-114,H*.48,'#ecd6c1',9);}
  if(state==='intro'){rect(0,0,W,15,'#08110c');rect(0,H-15,W,15,'#08110c');if(introTime<2){ctx.fillStyle=`rgba(0,0,0,${1-introTime/2})`;ctx.fillRect(0,0,W,H);}if(introTime>25){ctx.fillStyle=`rgba(0,0,0,${Math.sin(clamp((introTime-25)/2,0,1)*Math.PI)})`;ctx.fillRect(0,0,W,H);}}
  if(flash>0&&!reduced){ctx.fillStyle=`rgba(220,146,67,${flash*.13})`;ctx.fillRect(0,0,W,H);}
 }
