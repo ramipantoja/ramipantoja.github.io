@@ -4,20 +4,20 @@ const screen = $('screen'), feed = $('feed'), egg = $('egg');
 const reels = [...document.querySelectorAll('.reel')];
 const finalScene = reels.length - 1;
 const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
-const likes = ['1,482','3,207','618','84.2K','24.8K','1.2M','18.6K','9,741','8,142',''];
+const likes = ['1,482','24.8K','3,207','84.2K','618','1.2M','18.6K','9,741','8,142',''];
 const comments = [
  [['jo_irl','I picked my phone up to read this.'],['ben_w','The irony is not lost on me.']],
- [['ben_w','Another billionaire saving us from his own app.'],['martha.smush','Okay but the cabins look lovely.']],
- [['martha.smush','Okay but this actually looks lovely.'],['liam_irl','How far from the nearest town?']],
- [['olivia_dreams','You look unreal babe ♡'],['martha.smush','Another little secret?']],
  [['ben_w','I said one round. Two hours ago.'],['jo_irl','Level 247. Send help.']],
- [['liam_irl','Mate.'],['ben_w','Where is part 2?']],
+ [['ben_w','Another billionaire saving us from his own app.'],['martha.smush','Okay but the cabins look lovely.']],
+ [['olivia_dreams','You look unreal babe ♡'],['martha.smush','Another little secret?']],
+ [['martha.smush','Okay but this actually looks lovely.'],['liam_irl','How far from the nearest town?']],
+ [['liam_irl','Mate.'],['ben_w','the dinosaur wasn’t even his biggest problem']],
  [['martha.smush','It is literally 3am.'],['olivia_dreams','Still here? ♡']],
  [['jo_irl','I refuse to look at mine.'],['liam_irl','That is a full working day.']],
  [['martha.smush','This is just my actual job.'],['ben_w','Why am I doing unpaid overtime?']],
  []
 ];
-const liked = new Set(), saved = new Set();
+const liked = new Set();
 let scene = -1, raf = 0, filmTimers = [], revealStarted = false, timerEpoch = 0;
 let toastTimer, heartTimer, hiddenAt = false;
 for (let i=0;i<25;i++) { const c=document.createElement('span'); c.className='candy'; $('candies').append(c); }
@@ -43,10 +43,9 @@ function queueReveal() {
 }
 function syncActions() {
  $('like').setAttribute('aria-pressed',String(liked.has(scene)));
- $('save').setAttribute('aria-pressed',String(saved.has(scene)));
  const raw=likes[scene]||'';
  $('likes').textContent=liked.has(scene)&&!raw.includes('K')&&!raw.includes('M')?Number(raw.replaceAll(',',''))+1:raw;
- $('comment-count').textContent=['24','156','18','312','126','2,014','84','72','193',''][scene];
+ $('comment-count').textContent=['24','126','156','312','18','2,014','84','72','193',''][scene];
 }
 function setScene(n) {
  if(n===scene)return;
@@ -56,7 +55,7 @@ function setScene(n) {
  screen.classList.toggle('report-view',n===7);
  if(n!==7){screen.classList.remove('report-dismissed');$('report-dismiss').classList.remove('show');$('ignore-limit').disabled=false;}
  $('social').inert=n===7||n===finalScene;
- screen.classList.toggle('article-view',n===0||n===1);
+ screen.classList.toggle('article-view',reels[n].classList.contains('press-reel'));
  
  
  $('swipe-hint').hidden=n!==0;
@@ -86,7 +85,11 @@ $('brand').addEventListener('click',e=>{e.preventDefault();goTo(0);});
 
 
 $('like').addEventListener('click',()=>{liked.has(scene)?liked.delete(scene):liked.add(scene);syncActions();});
-$('save').addEventListener('click',()=>{saved.has(scene)?saved.delete(scene):saved.add(scene);syncActions();toast(saved.has(scene)?'Saved for this visit.':'Removed from saved.');});
+$('more').addEventListener('click',()=>$('more-sheet').showModal());
+$('close-more').addEventListener('click',()=>$('more-sheet').close());
+$('more-sheet').addEventListener('click',e=>{if(e.target===$('more-sheet'))$('more-sheet').close();});
+$('more-start').addEventListener('click',()=>{$('more-sheet').close();goTo(0);});
+$('more-share').addEventListener('click',()=>{$('more-sheet').close();shareReel();});
 feed.addEventListener('dblclick',e=>{
  if(scene===finalScene||e.target.closest('a,button'))return;
  liked.add(scene);syncActions();clearTimeout(heartTimer);$('double-heart').classList.add('show');
@@ -102,21 +105,22 @@ $('comments').addEventListener('click',()=>{
 });
 $('close-comments').addEventListener('click',()=>$('comments-sheet').close());
 $('comments-sheet').addEventListener('click',e=>{if(e.target===$('comments-sheet'))$('comments-sheet').close();});
-$('share').addEventListener('click',async()=>{
+async function shareReel(){
  const url='https://raspfilms.com/doomscroll/';
  try {
   if(navigator.share)await navigator.share({title:'DOOM SCROLL',text:'The feed stops here.',url});
   else if(navigator.clipboard && window.isSecureContext){await navigator.clipboard.writeText(url);toast('Link copied.');}
   else toast(url);
  }catch(e){if(e.name!=='AbortError')toast(url);}
-});
+}
+$('share').addEventListener('click',shareReel);
 $('ignore-limit').addEventListener('click',()=>{
  $('report-dismiss').classList.add('show');
  const button=$('ignore-limit');button.textContent='Done';button.disabled=true;
  screen.classList.add('report-dismissed');
 });
 document.addEventListener('keydown',e=>{
- if($('comments-sheet').open || e.target.closest('a,button,input,textarea,select'))return;
+ if($('comments-sheet').open || $('more-sheet').open || e.target.closest('a,button,input,textarea,select'))return;
  if(e.key==='ArrowDown'||e.key==='PageDown'||e.key===' '){e.preventDefault();goTo(scene+1);}
  if(e.key==='ArrowUp'||e.key==='PageUp'){e.preventDefault();goTo(scene-1);}
  if(e.key==='Home'){e.preventDefault();goTo(0);}
