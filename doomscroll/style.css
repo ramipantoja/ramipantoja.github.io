@@ -122,3 +122,17 @@
 /* Native reel overflow options. */
 .social #more{min-height:38px}.social .more-dots{fill:currentColor;stroke:none;margin-bottom:0}
 .more-actions{display:grid;margin-top:8px}.more-actions button{min-height:48px;padding:14px 2px;text-align:left;font-size:13px;border-bottom:1px solid #ffffff12}.more-actions button:last-child{border-bottom:0}
+
+/* Continuous article pages beneath a compact black Raspagram header. */
+.article-view .feed-header{height:calc(48px + env(safe-area-inset-top));padding:calc(6px + env(safe-area-inset-top)) 18px 6px;background:#090909}
+.news{background:#faf9f6}
+.news .bbc-page{top:calc(48px + env(safe-area-inset-top));bottom:0;padding:24px 66px 145px 22px;background:#faf9f6;justify-content:flex-start}
+.news .post{left:22px;background:transparent;border-top:1px solid #1112;padding-top:13px}
+.news .swipe-hint{color:#1118}
+.odin,.odin .valley-page,.odin .post{background:#fff1e5}
+.odin .valley-page{top:calc(48px + env(safe-area-inset-top));padding-top:24px}
+.odin .post{border-top:1px solid #2a3e3226;padding-top:13px}
+.camp-copy h2{margin-top:0}
+.camp-copy p{font-size:13px;line-height:1.4}
+@media(max-height:620px){.news .bbc-page{padding-top:18px;padding-bottom:125px}.odin .valley-page{padding-top:18px}.news .post,.odin .post{padding-top:10px}}
+@media(max-height:530px){.news .bbc-page{padding-top:13px;padding-bottom:115px}.odin .valley-page{padding-top:13px}.camp-copy p{font-size:11px}}

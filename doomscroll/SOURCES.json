@@ -11,7 +11,7 @@
   },
   "fictional_news": "ODIN, Hush Technologies and The Valley Brief are fictional story-world material.",
   "wordmark": "Pacifico, licensed under SIL Open Font License. See RASPAGRAM-FONT-LICENSE.txt.",
-  "game": "Latest Night One v0.8 survival game: cabin search, active hunters, automatic minibus exit, elapsed-time ending.",
+  "game": "Night One v0.9: centred PLAY screen, glowing outdoor phones, roll-call encounter and individual cabin details.",
   "fence_photo": {
     "type": "User-supplied Jurassic Park film still",
     "source": "Uploaded image.png; 11 October 2026",
@@ -23,5 +23,19 @@
     "file": "willow-regime-x.jpg",
     "game_file": "play/assets/willow-selfie.jpg"
   },
-  "favicon": "Byte-identical copy of https://raspfilms.com/favicon.png."
+  "favicon": "Byte-identical copy of https://raspfilms.com/favicon.png.",
+  "screen_time": {
+    "daily_average": "13h 09m",
+    "daily_minutes": [
+      720,
+      825,
+      770,
+      858,
+      795,
+      815,
+      740
+    ],
+    "chart_maximum_hours": 18,
+    "note": "Fictional weekly report; bar values average exactly 789 minutes."
+  }
 }
