@@ -1,8 +1,9 @@
 {
   "camp_photo": {
-    "type": "User-supplied waterfall photograph",
-    "source": "Uploaded image(1).png; 11 October 2026",
-    "note": "Original photograph retained; responsive CSS crop only."
+    "type": "User-supplied woodland cottage photograph",
+    "source": "Uploaded image(2).png; 11 October 2026",
+    "file": "camp-woodland.png",
+    "note": "Original upload retained byte-for-byte; responsive CSS crop only."
   },
   "real_news": {
     "url": "https://www.bbc.co.uk/news/articles/cvg7v7j3wqwo",
@@ -14,7 +15,7 @@
   "fence_photo": {
     "type": "User-supplied Jurassic Park film still",
     "source": "Uploaded image.png; 11 October 2026",
-    "note": "Original still retained. Responsive CSS crop with separate webpage headline and high-voltage sticker."
+    "note": "Original Jurassic Park still retained. Presented as a fictional meme repost with separate webpage headline, caption and high-voltage sticker."
   },
   "willow_photo": {
     "type": "Built-in image generation edit",
