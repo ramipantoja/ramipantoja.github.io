@@ -1,9 +1,13 @@
 {
   "camp_photo": {
-    "type": "User-supplied woodland cottage photograph",
-    "source": "Uploaded image(2).png; 11 October 2026",
-    "file": "camp-woodland.png",
-    "note": "Original upload retained byte-for-byte; responsive CSS crop only."
+    "type": "User-supplied high-resolution woodland photograph",
+    "source": "IMG_20170912_140103.jpg; 12 October 2026",
+    "file": "camp-woodland-hires.jpg",
+    "dimensions": [
+      2000,
+      1500
+    ],
+    "note": "Original upload retained byte-for-byte. CSS framing matches the previous square-image crop, approximately original pixels 297–1797 across the full height."
   },
   "real_news": {
     "url": "https://www.bbc.co.uk/news/articles/cvg7v7j3wqwo",
@@ -11,11 +15,11 @@
   },
   "fictional_news": "ODIN, Hush Technologies and The Valley Brief are fictional story-world material.",
   "wordmark": "Pacifico, licensed under SIL Open Font License. See RASPAGRAM-FONT-LICENSE.txt.",
-  "game": "Night One v0.9: centred PLAY screen, glowing outdoor phones, roll-call encounter and individual cabin details.",
+  "game": "Latest Night One v0.10 quality pass, synchronised with the standalone game.",
   "fence_photo": {
     "type": "User-supplied Jurassic Park film still",
     "source": "Uploaded image.png; 11 October 2026",
-    "note": "Original Jurassic Park still retained. Presented as a fictional meme repost with separate webpage headline, caption and high-voltage sticker."
+    "note": "Original Jurassic Park still retained in a slightly tilted meme repost card, with high-voltage sticker and no touch-grass punchline."
   },
   "willow_photo": {
     "type": "Built-in image generation edit",
