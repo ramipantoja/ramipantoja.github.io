@@ -15,9 +15,10 @@ if (watchDialog && typeof watchDialog.showModal === 'function') {
       if (event.defaultPrevented || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
       event.preventDefault();
       const { watchPlatform, watchId, watchTitle } = link.dataset;
+      // Do not force captions on. YouTube may still honour a viewer\u2019s saved preference.
       const source = watchPlatform === 'youtube'
-        ? `https://www.youtube-nocookie.com/embed/${encodeURIComponent(watchId)}?autoplay=1&rel=0`
-        : `https://player.vimeo.com/video/${encodeURIComponent(watchId)}?autoplay=1`;
+        ? `https://www.youtube-nocookie.com/embed/${encodeURIComponent(watchId)}?autoplay=1&rel=0&cc_load_policy=0&playsinline=1`
+        : `https://player.vimeo.com/video/${encodeURIComponent(watchId)}?autoplay=1&texttrack=false`;
       opener = link;
       title.textContent = watchTitle;
       platformName.textContent = watchPlatform === 'youtube' ? 'YouTube' : 'Vimeo';

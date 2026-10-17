@@ -10,6 +10,7 @@
 .post-v3-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(18px,3vw,42px)}
 .post-v3-grid article{min-width:0}
 .post-v3-grid article>img{width:100%;aspect-ratio:4/5;object-fit:cover;object-position:center top;background:#eee}
+.post-v3-grid article>img.post-poster-full{object-fit:contain;background:transparent}
 .post-v3-grid h3{font:400 clamp(1.5rem,2.65vw,2.7rem)/1.12 'Manrope',Arial,sans-serif;letter-spacing:-.05em;text-transform:uppercase;margin-top:18px}
 .post-v3-grid p{font-size:.875rem;line-height:1.55;margin-top:7px;color:#333}
 .post-v3-grid p span{display:block;color:#666}
