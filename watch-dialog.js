@@ -4,9 +4,6 @@
 const watchDialog = document.querySelector('.watch-dialog');
 if (watchDialog && typeof watchDialog.showModal === 'function') {
   const player = watchDialog.querySelector('#watch-player');
-  const title = watchDialog.querySelector('#watch-title');
-  const external = watchDialog.querySelector('.watch-external');
-  const platformName = watchDialog.querySelector('#watch-platform');
   const close = watchDialog.querySelector('.watch-close');
   let opener = null;
 
@@ -20,9 +17,7 @@ if (watchDialog && typeof watchDialog.showModal === 'function') {
         ? `https://www.youtube-nocookie.com/embed/${encodeURIComponent(watchId)}?autoplay=1&rel=0&cc_load_policy=0&playsinline=1`
         : `https://player.vimeo.com/video/${encodeURIComponent(watchId)}?autoplay=1&texttrack=false`;
       opener = link;
-      title.textContent = watchTitle;
-      platformName.textContent = watchPlatform === 'youtube' ? 'YouTube' : 'Vimeo';
-      external.href = link.href;
+      watchDialog.setAttribute('aria-label', `Watch ${watchTitle}`);
       const iframe = document.createElement('iframe');
       iframe.title = `Watch ${watchTitle}`;
       iframe.src = source;
