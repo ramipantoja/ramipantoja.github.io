@@ -173,7 +173,8 @@
 .watch-close:focus-visible{outline:2px solid #fff;outline-offset:-4px}
 .watch-close:focus:not(:focus-visible){outline:none}
 .watch-player{width:100%;aspect-ratio:16/9;background:#000}
-.watch-player iframe{display:block;width:100%;height:100%;border:0}
+.watch-player iframe,.watch-player .watch-video{display:block;width:100%;height:100%;border:0}
+.watch-player .watch-video{object-fit:contain;background:#000}
 @media(max-width:700px){
   .watch-dialog{width:min(calc(100vw - 24px),calc((100dvh - 80px)*16/9))}
 }
