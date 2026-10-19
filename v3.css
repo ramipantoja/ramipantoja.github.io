@@ -93,6 +93,14 @@
 }
 .home-v3 .about .about-lead{font-size:clamp(1.5rem,2.25vw,2.15rem);line-height:1.38}
 .home-v3 .about .about-copy{font-size:1rem;line-height:1.67;margin-bottom:18px}
+/* Keep the portrait in the existing label column and the bio on its shared axis. */
+.home-v3 .about-heading-lockup{flex-direction:column;align-items:flex-start;gap:28px}
+.home-v3 .about-portrait{width:min(100%,300px);margin:0}
+.home-v3 .about-heading-lockup .about-portrait img{display:block;width:100%;height:auto}
+@media(max-width:900px){
+  .home-v3 .about-heading-lockup{gap:24px}
+  .home-v3 .about-portrait{width:min(100%,260px)}
+}
 .home-v3 .post-banner{border-top-width:1px}
 .home-v3 .post-banner-inner{grid-template-columns:minmax(0,.88fr) minmax(0,1.12fr);column-gap:clamp(28px,5vw,76px)}
 .home-v3 .about-grid,
